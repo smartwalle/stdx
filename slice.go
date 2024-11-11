@@ -1,20 +1,19 @@
-package ux
+package stdx
 
 func Append[T any](slice []T, elems ...T) []T {
-	el := len(elems)
-
 	n := len(slice)
 	c := cap(slice)
+	e := len(elems)
 
-	if n+el > c {
-		npq := make([]T, n, c*2+el)
-		copy(npq, slice)
-		slice = npq
+	if n+e > c {
+		ns := make([]T, n, c*2+e)
+		copy(ns, slice)
+		slice = ns
 	}
-	slice = slice[0 : n+el]
+	slice = slice[0 : n+e]
 
-	for j := 0; j < el; j++ {
-		slice[n+j] = elems[j]
+	for i := 0; i < e; i++ {
+		slice[n+i] = elems[i]
 	}
 	return slice
 }
