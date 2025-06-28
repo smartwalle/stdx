@@ -1,6 +1,6 @@
 package slicex
 
-// Append 添加元素到 slice
+// Append 追加元素到 slice
 func Append[T any](slice []T, elems ...T) []T {
 	n := len(slice)
 	c := cap(slice)
