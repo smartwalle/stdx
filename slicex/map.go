@@ -13,15 +13,16 @@ func Map[T any, N any](slice []T, fn func(elem T) N) []N {
 	return ns
 }
 
-func MapMatched[T any, N any](slice []T, filterFunc func(elem T) bool, mapFunc func(elem T) N) []N {
+// MapMatched 对 slice 中满足指定条件的元素进行转换
+func MapMatched[T any, N any](slice []T, predicate func(elem T) bool, fn func(elem T) N) []N {
 	var n = len(slice)
 	if n == 0 {
 		return nil
 	}
 	var ns = make([]N, 0, n)
 	for _, elem := range slice {
-		if filterFunc(elem) {
-			ns = Append(ns, mapFunc(elem))
+		if predicate(elem) {
+			ns = Append(ns, fn(elem))
 		}
 	}
 	return ns
