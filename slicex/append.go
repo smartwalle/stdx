@@ -2,12 +2,12 @@ package slicex
 
 // Append 追加元素到 slice
 func Append[T any](slice []T, elems ...T) []T {
-	n := len(slice)
-	c := cap(slice)
-	e := len(elems)
+	var n = len(slice)
+	var c = cap(slice)
+	var e = len(elems)
 
 	if n+e > c {
-		ns := make([]T, n, c*2+e)
+		var ns = make([]T, n, c*2+e)
 		copy(ns, slice)
 		slice = ns
 	}
