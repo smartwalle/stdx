@@ -1,6 +1,6 @@
 package slicex
 
-// Filter 筛选出 slice 中满足条件的元素
+// Filter 筛选出 slice 中满足指定条件的元素
 func Filter[T any](slice []T, fn func(elem T) bool) []T {
 	if len(slice) == 0 {
 		return nil
