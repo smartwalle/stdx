@@ -1,7 +1,7 @@
 package slicex
 
 // Equals 比较两个 slice 是否相等
-func Equals[T any](s1, s2 []T, fn func(elem1, elem2 T) bool) bool {
+func Equals[T any](s1, s2 []T, fn func(a, b T) bool) bool {
 	if len(s1) != len(s2) {
 		return false
 	}
