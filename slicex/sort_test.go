@@ -155,3 +155,96 @@ func TestSortTime(t *testing.T) {
 		})
 	t.Log("耗时(ms):", time.Since(start).Milliseconds())
 }
+
+func TestSortEmptySlice(t *testing.T) {
+	// 测试空切片排序
+	nums := []int{}
+	slicex.Sort(nums, cmpIntAsc)
+	expected := []int{}
+	if !reflect.DeepEqual(nums, expected) {
+		t.Errorf("empty slice sort failed: expect %v, got %v", expected, nums)
+	}
+}
+
+func TestSortNilSlice(t *testing.T) {
+	// 测试nil切片排序
+	var nums []int
+	slicex.Sort(nums, cmpIntAsc)
+	expected := []int(nil)
+	if !reflect.DeepEqual(nums, expected) {
+		t.Errorf("nil slice sort failed: expect %v, got %v", expected, nums)
+	}
+}
+
+func TestSortSingleElement(t *testing.T) {
+	// 测试单元素切片排序
+	nums := []int{42}
+	slicex.Sort(nums, cmpIntAsc)
+	expected := []int{42}
+	if !reflect.DeepEqual(nums, expected) {
+		t.Errorf("single element sort failed: expect %v, got %v", expected, nums)
+	}
+}
+
+func TestSortTwoElements(t *testing.T) {
+	// 测试两个元素切片排序
+	nums := []int{5, 2}
+	slicex.Sort(nums, cmpIntAsc)
+	expected := []int{2, 5}
+	if !reflect.DeepEqual(nums, expected) {
+		t.Errorf("two elements sort failed: expect %v, got %v", expected, nums)
+	}
+}
+
+func TestSortWithNoComparators(t *testing.T) {
+	// 测试没有比较函数的情况
+	nums := []int{5, 2, 8, 1, 9}
+	slicex.Sort(nums)                // 没有传递比较函数
+	expected := []int{5, 2, 8, 1, 9} // 应该保持原顺序
+	if !reflect.DeepEqual(nums, expected) {
+		t.Errorf("sort with no comparators failed: expect %v, got %v", expected, nums)
+	}
+}
+
+func TestSortWithMultipleComparators(t *testing.T) {
+	// 测试多个比较函数的情况
+	people := []Person{
+		{"Alice", 30, 90.5},
+		{"Bob", 25, 88.0},
+		{"Alice", 30, 85.0},
+		{"Bob", 25, 95.0},
+	}
+	slicex.Sort(people,
+		func(a, b Person) int { return cmpIntAsc(a.Age, b.Age) },
+		func(a, b Person) int { return cmpStringAsc(a.Name, b.Name) },
+	)
+	expected := []Person{
+		{"Bob", 25, 88.0},
+		{"Bob", 25, 95.0},
+		{"Alice", 30, 90.5},
+		{"Alice", 30, 85.0},
+	}
+	if !reflect.DeepEqual(people, expected) {
+		t.Errorf("sort with multiple comparators failed: expect %+v, got %+v", expected, people)
+	}
+}
+
+func TestSortWithNegativeNumbers(t *testing.T) {
+	// 测试负数排序
+	nums := []int{-5, 2, -8, 1, -9, 0}
+	slicex.Sort(nums, cmpIntAsc)
+	expected := []int{-9, -8, -5, 0, 1, 2}
+	if !reflect.DeepEqual(nums, expected) {
+		t.Errorf("negative numbers sort failed: expect %v, got %v", expected, nums)
+	}
+}
+
+func TestSortWithZeroValues(t *testing.T) {
+	// 测试包含零值的排序
+	nums := []int{0, 1, 0, 2, 0, 3}
+	slicex.Sort(nums, cmpIntAsc)
+	expected := []int{0, 0, 0, 1, 2, 3}
+	if !reflect.DeepEqual(nums, expected) {
+		t.Errorf("zero values sort failed: expect %v, got %v", expected, nums)
+	}
+}

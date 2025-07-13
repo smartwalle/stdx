@@ -1,6 +1,7 @@
 package slicex_test
 
 import (
+	"fmt"
 	"strconv"
 	"testing"
 
@@ -261,6 +262,145 @@ func TestMapWithIntToInt(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			var actual = slicex.Map(test.source, test.fn)
 			if !slicex.Equals(actual, test.expected, IntEqual) {
+				t.Fatalf("实际: %+v, 预期: %+v", actual, test.expected)
+			}
+		})
+	}
+}
+
+func TestMapWithStructs(t *testing.T) {
+	// 测试自定义结构体类型的Map
+	type Person struct {
+		Name string
+		Age  int
+	}
+
+	var tests = []struct {
+		name     string
+		source   []Person
+		expected []string
+		fn       func(elem Person) string
+	}{
+		{
+			name: "提取姓名",
+			source: []Person{
+				{Name: "Alice", Age: 25},
+				{Name: "Bob", Age: 30},
+				{Name: "Charlie", Age: 35},
+			},
+			expected: []string{"Alice", "Bob", "Charlie"},
+			fn: func(elem Person) string {
+				return elem.Name
+			},
+		},
+		{
+			name: "格式化姓名和年龄",
+			source: []Person{
+				{Name: "Alice", Age: 25},
+				{Name: "Bob", Age: 30},
+				{Name: "Charlie", Age: 35},
+			},
+			expected: []string{"Alice(25)", "Bob(30)", "Charlie(35)"},
+			fn: func(elem Person) string {
+				return fmt.Sprintf("%s(%d)", elem.Name, elem.Age)
+			},
+		},
+		{
+			name:     "空结构体切片",
+			source:   []Person{},
+			expected: []string{},
+			fn: func(elem Person) string {
+				return elem.Name
+			},
+		},
+		{
+			name: "格式化姓名和年龄",
+			source: []Person{
+				{Name: "Alice", Age: 25},
+				{Name: "Bob", Age: 17},
+				{Name: "Charlie", Age: 30},
+				{Name: "David", Age: 16},
+			},
+			expected: []string{"Alice(25)", "Bob(17)", "Charlie(30)", "David(16)"},
+			fn: func(elem Person) string {
+				return fmt.Sprintf("%s(%d)", elem.Name, elem.Age)
+			},
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			var actual = slicex.Map(test.source, test.fn)
+			if !slicex.Equals(actual, test.expected, StringEqual) {
+				t.Fatalf("实际: %+v, 预期: %+v", actual, test.expected)
+			}
+		})
+	}
+}
+
+func TestMapMatchedWithStructs(t *testing.T) {
+	// 测试自定义结构体类型的MapMatched
+	type Person struct {
+		Name string
+		Age  int
+	}
+
+	var tests = []struct {
+		name      string
+		source    []Person
+		expected  []string
+		predicate func(elem Person) bool
+		mapFunc   func(elem Person) string
+	}{
+		{
+			name: "过滤成年人并提取姓名",
+			source: []Person{
+				{Name: "Alice", Age: 25},
+				{Name: "Bob", Age: 17},
+				{Name: "Charlie", Age: 30},
+				{Name: "David", Age: 16},
+			},
+			expected: []string{"Alice", "Charlie"},
+			predicate: func(elem Person) bool {
+				return elem.Age >= 18
+			},
+			mapFunc: func(elem Person) string {
+				return elem.Name
+			},
+		},
+		{
+			name: "过滤名字以A开头的并格式化",
+			source: []Person{
+				{Name: "Alice", Age: 25},
+				{Name: "Bob", Age: 17},
+				{Name: "Charlie", Age: 30},
+				{Name: "David", Age: 16},
+			},
+			expected: []string{"Alice(25)"},
+			predicate: func(elem Person) bool {
+				return len(elem.Name) > 0 && elem.Name[0] == 'A'
+			},
+			mapFunc: func(elem Person) string {
+				return fmt.Sprintf("%s(%d)", elem.Name, elem.Age)
+			},
+		},
+		{
+			name:     "空结构体切片",
+			source:   []Person{},
+			expected: []string{},
+			predicate: func(elem Person) bool {
+				return elem.Age >= 18
+			},
+			mapFunc: func(elem Person) string {
+				return elem.Name
+			},
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			var actual = slicex.MapMatched(test.source, test.predicate, test.mapFunc)
+			if !slicex.Equals(actual, test.expected, StringEqual) {
 				t.Fatalf("实际: %+v, 预期: %+v", actual, test.expected)
 			}
 		})
