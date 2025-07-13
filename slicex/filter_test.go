@@ -172,3 +172,69 @@ func TestFilterWithStrings(t *testing.T) {
 		})
 	}
 }
+
+func TestFilterWithStructs(t *testing.T) {
+	// 测试自定义结构体类型的Filter
+	type Person struct {
+		Name string
+		Age  int
+	}
+
+	var tests = []struct {
+		name     string
+		source   []Person
+		expected []Person
+		fn       func(elem Person) bool
+	}{
+		{
+			name: "过滤成年人",
+			source: []Person{
+				{Name: "Alice", Age: 25},
+				{Name: "Bob", Age: 17},
+				{Name: "Charlie", Age: 30},
+				{Name: "David", Age: 16},
+			},
+			expected: []Person{
+				{Name: "Alice", Age: 25},
+				{Name: "Charlie", Age: 30},
+			},
+			fn: func(elem Person) bool {
+				return elem.Age >= 18
+			},
+		},
+		{
+			name: "过滤名字以A开头的",
+			source: []Person{
+				{Name: "Alice", Age: 25},
+				{Name: "Bob", Age: 17},
+				{Name: "Charlie", Age: 30},
+				{Name: "David", Age: 16},
+			},
+			expected: []Person{
+				{Name: "Alice", Age: 25},
+			},
+			fn: func(elem Person) bool {
+				return len(elem.Name) > 0 && elem.Name[0] == 'A'
+			},
+		},
+		{
+			name:     "空结构体切片",
+			source:   []Person{},
+			expected: []Person{},
+			fn: func(elem Person) bool {
+				return elem.Age > 0
+			},
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			var actual = slicex.Filter(test.source, test.fn)
+			if !slicex.Equals(actual, test.expected, func(a, b Person) bool {
+				return a.Name == b.Name && a.Age == b.Age
+			}) {
+				t.Fatalf("实际: %+v, 预期: %+v", actual, test.expected)
+			}
+		})
+	}
+}
