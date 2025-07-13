@@ -113,6 +113,17 @@ func TestMapMatched(t *testing.T) {
 			},
 		},
 		{
+			name:     "所有元素都不匹配",
+			source:   []int{1, 2, 3, 4, 5, 6},
+			expected: []string{},
+			filterFunc: func(elem int) bool {
+				return false
+			},
+			mapFunc: func(elem int) string {
+				return strconv.FormatInt(int64(elem), 10)
+			},
+		},
+		{
 			name:     "过滤所有元素并映射（*2）",
 			source:   []int{1, 2, 3, 4, 5, 6},
 			expected: []string{"2", "4", "6", "8", "10", "12"},

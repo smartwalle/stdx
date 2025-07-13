@@ -6,9 +6,9 @@ func Map[T any, N any](slice []T, fn func(elem T) N) []N {
 	if n == 0 {
 		return nil
 	}
-	var ns = make([]N, 0, n)
-	for _, elem := range slice {
-		ns = Append(ns, fn(elem))
+	var ns = make([]N, n)
+	for idx, elem := range slice {
+		ns[idx] = fn(elem)
 	}
 	return ns
 }
