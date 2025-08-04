@@ -1,7 +1,7 @@
-package mathx_test
+package stdx_test
 
 import (
-	"github.com/smartwalle/stdx/mathx"
+	"github.com/smartwalle/stdx"
 	"testing"
 )
 
@@ -101,7 +101,7 @@ func TestRound(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		if actual := mathx.Round(tt.v, tt.n); actual != tt.r {
+		if actual := stdx.Round(tt.v, tt.n); actual != tt.r {
 			t.Errorf("Round(%f, %d), 期望得到:%f, 实际得到:%f", tt.v, tt.n, tt.r, actual)
 		}
 	}
@@ -203,7 +203,7 @@ func TestFloor(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		if actual := mathx.Floor(tt.v, tt.n); actual != tt.r {
+		if actual := stdx.Floor(tt.v, tt.n); actual != tt.r {
 			t.Errorf("Floor(%f, %d), 期望得到:%f, 实际得到:%f", tt.v, tt.n, tt.r, actual)
 		}
 	}
@@ -305,7 +305,7 @@ func TestCeil(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		if actual := mathx.Ceil(tt.v, tt.n); actual != tt.r {
+		if actual := stdx.Ceil(tt.v, tt.n); actual != tt.r {
 			t.Errorf("Ceil(%f, %d), 期望得到:%f, 实际得到:%f", tt.v, tt.n, tt.r, actual)
 		}
 	}
@@ -407,7 +407,7 @@ func TestTrunc(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		if actual := mathx.Trunc(tt.v, tt.n); actual != tt.r {
+		if actual := stdx.Trunc(tt.v, tt.n); actual != tt.r {
 			t.Errorf("Trunc(%f, %d), 期望得到:%f, 实际得到:%f", tt.v, tt.n, tt.r, actual)
 		}
 	}
@@ -430,11 +430,11 @@ func TestCeilAndFloor(t *testing.T) {
 	for _, tt := range tests {
 		var v = tt.v / tt.d
 
-		if actual := mathx.Ceil(v, tt.n); actual != tt.cr {
+		if actual := stdx.Ceil(v, tt.n); actual != tt.cr {
 			t.Errorf("Ceil(%f, %d), 期望得到:%f, 实际得到:%f", tt.v/tt.d, tt.n, tt.cr, actual)
 		}
 
-		if actual := mathx.Floor(tt.v-v, tt.n); actual != tt.fr {
+		if actual := stdx.Floor(tt.v-v, tt.n); actual != tt.fr {
 			t.Errorf("Floor(%f, %d), 期望得到:%f, 实际得到:%f", tt.v-v, tt.n, tt.fr, actual)
 		}
 	}
@@ -456,11 +456,11 @@ func TestTrunc2(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		if actual := mathx.Trunc(tt.d, tt.n); actual != tt.cr {
+		if actual := stdx.Trunc(tt.d, tt.n); actual != tt.cr {
 			t.Errorf("Trunc(%f, %d), 期望得到:%f, 实际得到:%f", tt.d, tt.n, tt.cr, actual)
 		}
 
-		if actual := tt.v - mathx.Trunc(tt.d, tt.n); actual != tt.fr {
+		if actual := tt.v - stdx.Trunc(tt.d, tt.n); actual != tt.fr {
 			t.Errorf("%f - Trunc(%f, %d), 期望得到:%f, 实际得到:%f", tt.v, tt.d, tt.n, tt.fr, actual)
 		}
 	}
@@ -482,10 +482,10 @@ func TestRound2(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		if actual := mathx.Round(tt.d, tt.n); actual != tt.cr {
+		if actual := stdx.Round(tt.d, tt.n); actual != tt.cr {
 			t.Errorf("Round(%f, %d), 期望得到:%f, 实际得到:%f", tt.d, tt.n, tt.cr, actual)
 		}
-		if actual := tt.v - mathx.Round(tt.d, tt.n); actual != tt.fr {
+		if actual := tt.v - stdx.Round(tt.d, tt.n); actual != tt.fr {
 			t.Errorf("%f - Round(%f, %d), 期望得到:%f, 实际得到:%f", tt.v, tt.d, tt.n, tt.fr, actual)
 		}
 	}
