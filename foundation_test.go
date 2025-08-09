@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-func TestBool(t *testing.T) {
+func TestToBool(t *testing.T) {
 	var tests = []struct {
 		v interface{}
 		r bool
@@ -24,13 +24,13 @@ func TestBool(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		if actual := stdx.Bool(tt.v); actual != tt.r {
+		if actual := stdx.ToBool(tt.v); actual != tt.r {
 			t.Errorf("把 %v 转换为 bool, 期望获得 %v, 实际获得  %v", tt.v, tt.r, actual)
 		}
 	}
 }
 
-func TestFloat64(t *testing.T) {
+func TestToFloat64(t *testing.T) {
 	var tests = []struct {
 		v interface{}
 		r float64
@@ -44,13 +44,13 @@ func TestFloat64(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		if actual := stdx.Float64(tt.v); actual != tt.r {
+		if actual := stdx.ToFloat64(tt.v); actual != tt.r {
 			t.Errorf("把 %v 转换为 float64, 期望获得 %f, 实际获得  %f", tt.v, tt.r, actual)
 		}
 	}
 }
 
-func TestInt(t *testing.T) {
+func TestToInt(t *testing.T) {
 	var tests = []struct {
 		v interface{}
 		r int
@@ -74,13 +74,13 @@ func TestInt(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		if actual := stdx.Int(tt.v); actual != tt.r {
+		if actual := stdx.ToInt(tt.v); actual != tt.r {
 			t.Errorf("把 %v 转换为 int, 期望获得 %d, 实际获得  %d", tt.v, tt.r, actual)
 		}
 	}
 }
 
-func TestInt64(t *testing.T) {
+func TestToInt64(t *testing.T) {
 	var tests = []struct {
 		v interface{}
 		r int64
@@ -104,13 +104,13 @@ func TestInt64(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		if actual := stdx.Int64(tt.v); actual != tt.r {
+		if actual := stdx.ToInt64(tt.v); actual != tt.r {
 			t.Errorf("把 %v 转换为 int64, 期望获得 %d, 实际获得  %d", tt.v, tt.r, actual)
 		}
 	}
 }
 
-func TestUint(t *testing.T) {
+func TestToUint(t *testing.T) {
 	var tests = []struct {
 		v interface{}
 		r uint
@@ -130,13 +130,13 @@ func TestUint(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		if actual := stdx.Uint(tt.v); actual != tt.r {
+		if actual := stdx.ToUint(tt.v); actual != tt.r {
 			t.Errorf("把 %v 转换为 uint32, 期望获得 %d, 实际获得  %d", tt.v, tt.r, actual)
 		}
 	}
 }
 
-func TestUint8(t *testing.T) {
+func TestToUint8(t *testing.T) {
 	var tests = []struct {
 		v interface{}
 		r uint8
@@ -157,13 +157,13 @@ func TestUint8(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		if actual := stdx.Uint8(tt.v); actual != tt.r {
+		if actual := stdx.ToUint8(tt.v); actual != tt.r {
 			t.Errorf("把 %v 转换为 uint8, 期望获得 %d, 实际获得  %d", tt.v, tt.r, actual)
 		}
 	}
 }
 
-func TestUint16(t *testing.T) {
+func TestToUint16(t *testing.T) {
 	var tests = []struct {
 		v interface{}
 		r uint16
@@ -184,13 +184,13 @@ func TestUint16(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		if actual := stdx.Uint16(tt.v); actual != tt.r {
+		if actual := stdx.ToUint16(tt.v); actual != tt.r {
 			t.Errorf("把 %v 转换为 uint16, 期望获得 %d, 实际获得  %d", tt.v, tt.r, actual)
 		}
 	}
 }
 
-func TestUint32(t *testing.T) {
+func TestToUint32(t *testing.T) {
 	var tests = []struct {
 		v interface{}
 		r uint32
@@ -211,13 +211,13 @@ func TestUint32(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		if actual := stdx.Uint32(tt.v); actual != tt.r {
+		if actual := stdx.ToUint32(tt.v); actual != tt.r {
 			t.Errorf("把 %v 转换为 uint32, 期望获得 %d, 实际获得  %d", tt.v, tt.r, actual)
 		}
 	}
 }
 
-func TestUint64(t *testing.T) {
+func TestToUint64(t *testing.T) {
 	var tests = []struct {
 		v interface{}
 		r uint64
@@ -238,13 +238,13 @@ func TestUint64(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		if actual := stdx.Uint64(tt.v); actual != tt.r {
+		if actual := stdx.ToUint64(tt.v); actual != tt.r {
 			t.Errorf("把 %v 转换为 Uint64, 期望获得 %d, 实际获得  %d", tt.v, tt.r, actual)
 		}
 	}
 }
 
-func TestString(t *testing.T) {
+func TestToString(t *testing.T) {
 	var tests = []struct {
 		v interface{}
 		r string
@@ -257,7 +257,7 @@ func TestString(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		if actual := stdx.String(tt.v); actual != tt.r {
+		if actual := stdx.ToString(tt.v); actual != tt.r {
 			t.Errorf("把 %v 转换为 string, 期望获得 %v, 实际获得  %v", tt.v, tt.r, actual)
 		}
 	}

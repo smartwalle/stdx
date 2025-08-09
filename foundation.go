@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-func Bool(value interface{}) bool {
+func ToBool(value interface{}) bool {
 	switch rValue := value.(type) {
 	case int:
 		return rValue != 0
@@ -43,7 +43,7 @@ func Bool(value interface{}) bool {
 	}
 }
 
-func Float32(value interface{}) float32 {
+func ToFloat32(value interface{}) float32 {
 	switch rValue := value.(type) {
 	case int:
 		return float32(rValue)
@@ -84,7 +84,7 @@ func Float32(value interface{}) float32 {
 	}
 }
 
-func Float64(value interface{}) float64 {
+func ToFloat64(value interface{}) float64 {
 	switch rValue := value.(type) {
 	case int:
 		return float64(rValue)
@@ -125,7 +125,7 @@ func Float64(value interface{}) float64 {
 	}
 }
 
-func Int(value interface{}) int {
+func ToInt(value interface{}) int {
 	switch rValue := value.(type) {
 	case int:
 		return rValue
@@ -166,7 +166,7 @@ func Int(value interface{}) int {
 	}
 }
 
-func Int8(value interface{}) int8 {
+func ToInt8(value interface{}) int8 {
 	switch rValue := value.(type) {
 	case int:
 		return int8(rValue)
@@ -207,7 +207,7 @@ func Int8(value interface{}) int8 {
 	}
 }
 
-func Int16(value interface{}) int16 {
+func ToInt16(value interface{}) int16 {
 	switch rValue := value.(type) {
 	case int:
 		return int16(rValue)
@@ -248,7 +248,7 @@ func Int16(value interface{}) int16 {
 	}
 }
 
-func Int32(value interface{}) int32 {
+func ToInt32(value interface{}) int32 {
 	switch rValue := value.(type) {
 	case int:
 		return int32(rValue)
@@ -289,7 +289,7 @@ func Int32(value interface{}) int32 {
 	}
 }
 
-func Int64(value interface{}) int64 {
+func ToInt64(value interface{}) int64 {
 	switch rValue := value.(type) {
 	case int:
 		return int64(rValue)
@@ -330,7 +330,7 @@ func Int64(value interface{}) int64 {
 	}
 }
 
-func Uint(value interface{}) uint {
+func ToUint(value interface{}) uint {
 	switch rValue := value.(type) {
 	case int:
 		return uint(rValue)
@@ -371,7 +371,7 @@ func Uint(value interface{}) uint {
 	}
 }
 
-func Uint8(value interface{}) uint8 {
+func ToUint8(value interface{}) uint8 {
 	switch rValue := value.(type) {
 	case int:
 		return uint8(rValue)
@@ -412,7 +412,7 @@ func Uint8(value interface{}) uint8 {
 	}
 }
 
-func Uint16(value interface{}) uint16 {
+func ToUint16(value interface{}) uint16 {
 	switch rValue := value.(type) {
 	case int:
 		return uint16(rValue)
@@ -453,7 +453,7 @@ func Uint16(value interface{}) uint16 {
 	}
 }
 
-func Uint32(value interface{}) uint32 {
+func ToUint32(value interface{}) uint32 {
 	switch rValue := value.(type) {
 	case int:
 		return uint32(rValue)
@@ -494,7 +494,7 @@ func Uint32(value interface{}) uint32 {
 	}
 }
 
-func Uint64(value interface{}) uint64 {
+func ToUint64(value interface{}) uint64 {
 	switch rValue := value.(type) {
 	case int:
 		return uint64(rValue)
@@ -535,7 +535,7 @@ func Uint64(value interface{}) uint64 {
 	}
 }
 
-func Uintptr(value interface{}) uintptr {
+func ToUintptr(value interface{}) uintptr {
 	switch rValue := value.(type) {
 	case int:
 		return uintptr(rValue)
@@ -576,7 +576,7 @@ func Uintptr(value interface{}) uintptr {
 	}
 }
 
-func String(value interface{}) string {
+func ToString(value interface{}) string {
 	switch rValue := value.(type) {
 	case int:
 		return strconv.FormatInt(int64(rValue), 10)
