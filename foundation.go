@@ -2,15 +2,127 @@ package stdx
 
 import (
 	"strconv"
+	"strings"
 )
 
-func trim(s string) string {
-	for i := 0; i < len(s); i++ {
-		if s[i] == '.' {
-			return s[0:i]
-		}
+func Bool(value interface{}) bool {
+	switch rValue := value.(type) {
+	case int:
+		return rValue != 0
+	case int8:
+		return rValue != 0
+	case int16:
+		return rValue != 0
+	case int32:
+		return rValue != 0
+	case int64:
+		return rValue != 0
+	case uint:
+		return rValue != 0
+	case uint8:
+		return rValue != 0
+	case uint16:
+		return rValue != 0
+	case uint32:
+		return rValue != 0
+	case uint64:
+		return rValue != 0
+	case uintptr:
+		return rValue != 0
+	case float32:
+		return rValue != 0
+	case float64:
+		return rValue != 0
+	case bool:
+		return rValue
+	case string:
+		var nValue, _ = strconv.ParseBool(rValue)
+		return nValue
+	default:
+		return false
 	}
-	return s
+}
+
+func Float32(value interface{}) float32 {
+	switch rValue := value.(type) {
+	case int:
+		return float32(rValue)
+	case int8:
+		return float32(rValue)
+	case int16:
+		return float32(rValue)
+	case int32:
+		return float32(rValue)
+	case int64:
+		return float32(rValue)
+	case uint:
+		return float32(rValue)
+	case uint8:
+		return float32(rValue)
+	case uint16:
+		return float32(rValue)
+	case uint32:
+		return float32(rValue)
+	case uint64:
+		return float32(rValue)
+	case uintptr:
+		return float32(rValue)
+	case float32:
+		return rValue
+	case float64:
+		return float32(rValue)
+	case bool:
+		if rValue {
+			return 1
+		}
+		return 0
+	case string:
+		var nValue, _ = strconv.ParseFloat(rValue, 32)
+		return float32(nValue)
+	default:
+		return 0
+	}
+}
+
+func Float64(value interface{}) float64 {
+	switch rValue := value.(type) {
+	case int:
+		return float64(rValue)
+	case int8:
+		return float64(rValue)
+	case int16:
+		return float64(rValue)
+	case int32:
+		return float64(rValue)
+	case int64:
+		return float64(rValue)
+	case uint:
+		return float64(rValue)
+	case uint8:
+		return float64(rValue)
+	case uint16:
+		return float64(rValue)
+	case uint32:
+		return float64(rValue)
+	case uint64:
+		return float64(rValue)
+	case uintptr:
+		return float64(rValue)
+	case float32:
+		return float64(rValue)
+	case float64:
+		return rValue
+	case bool:
+		if rValue {
+			return 1
+		}
+		return 0
+	case string:
+		var nValue, _ = strconv.ParseFloat(rValue, 64)
+		return nValue
+	default:
+		return 0
+	}
 }
 
 func Int(value interface{}) int {
@@ -47,7 +159,7 @@ func Int(value interface{}) int {
 		}
 		return 0
 	case string:
-		var nValue, _ = strconv.ParseInt(trim(rValue), 10, 64)
+		var nValue, _ = strconv.ParseInt(trimDecimal(rValue), 10, 64)
 		return int(nValue)
 	default:
 		return 0
@@ -88,7 +200,7 @@ func Int8(value interface{}) int8 {
 		}
 		return 0
 	case string:
-		var nValue, _ = strconv.ParseInt(trim(rValue), 10, 8)
+		var nValue, _ = strconv.ParseInt(trimDecimal(rValue), 10, 8)
 		return int8(nValue)
 	default:
 		return 0
@@ -129,7 +241,7 @@ func Int16(value interface{}) int16 {
 		}
 		return 0
 	case string:
-		var nValue, _ = strconv.ParseInt(trim(rValue), 10, 16)
+		var nValue, _ = strconv.ParseInt(trimDecimal(rValue), 10, 16)
 		return int16(nValue)
 	default:
 		return 0
@@ -170,7 +282,7 @@ func Int32(value interface{}) int32 {
 		}
 		return 0
 	case string:
-		var nValue, _ = strconv.ParseInt(trim(rValue), 10, 32)
+		var nValue, _ = strconv.ParseInt(trimDecimal(rValue), 10, 32)
 		return int32(nValue)
 	default:
 		return 0
@@ -211,7 +323,7 @@ func Int64(value interface{}) int64 {
 		}
 		return 0
 	case string:
-		var nValue, _ = strconv.ParseInt(trim(rValue), 10, 64)
+		var nValue, _ = strconv.ParseInt(trimDecimal(rValue), 10, 64)
 		return nValue
 	default:
 		return 0
@@ -252,7 +364,7 @@ func Uint(value interface{}) uint {
 		}
 		return 0
 	case string:
-		var nValue, _ = strconv.ParseUint(trim(rValue), 10, 64)
+		var nValue, _ = strconv.ParseUint(trimDecimal(rValue), 10, 64)
 		return uint(nValue)
 	default:
 		return 0
@@ -293,7 +405,7 @@ func Uint8(value interface{}) uint8 {
 		}
 		return 0
 	case string:
-		var nValue, _ = strconv.ParseUint(trim(rValue), 10, 8)
+		var nValue, _ = strconv.ParseUint(trimDecimal(rValue), 10, 8)
 		return uint8(nValue)
 	default:
 		return 0
@@ -334,7 +446,7 @@ func Uint16(value interface{}) uint16 {
 		}
 		return 0
 	case string:
-		var nValue, _ = strconv.ParseUint(trim(rValue), 10, 16)
+		var nValue, _ = strconv.ParseUint(trimDecimal(rValue), 10, 16)
 		return uint16(nValue)
 	default:
 		return 0
@@ -375,7 +487,7 @@ func Uint32(value interface{}) uint32 {
 		}
 		return 0
 	case string:
-		var nValue, _ = strconv.ParseUint(trim(rValue), 10, 32)
+		var nValue, _ = strconv.ParseUint(trimDecimal(rValue), 10, 32)
 		return uint32(nValue)
 	default:
 		return 0
@@ -416,7 +528,7 @@ func Uint64(value interface{}) uint64 {
 		}
 		return 0
 	case string:
-		var nValue, _ = strconv.ParseUint(trim(rValue), 10, 64)
+		var nValue, _ = strconv.ParseUint(trimDecimal(rValue), 10, 64)
 		return nValue
 	default:
 		return 0
@@ -457,9 +569,53 @@ func Uintptr(value interface{}) uintptr {
 		}
 		return 0
 	case string:
-		var nValue, _ = strconv.ParseUint(trim(rValue), 10, 64)
+		var nValue, _ = strconv.ParseUint(trimDecimal(rValue), 10, 64)
 		return uintptr(nValue)
 	default:
 		return 0
 	}
+}
+
+func String(value interface{}) string {
+	switch rValue := value.(type) {
+	case int:
+		return strconv.FormatInt(int64(rValue), 10)
+	case int8:
+		return strconv.FormatInt(int64(rValue), 10)
+	case int16:
+		return strconv.FormatInt(int64(rValue), 10)
+	case int32:
+		return strconv.FormatInt(int64(rValue), 10)
+	case int64:
+		return strconv.FormatInt(rValue, 10)
+	case uint:
+		return strconv.FormatUint(uint64(rValue), 10)
+	case uint8:
+		return strconv.FormatUint(uint64(rValue), 10)
+	case uint16:
+		return strconv.FormatUint(uint64(rValue), 10)
+	case uint32:
+		return strconv.FormatUint(uint64(rValue), 10)
+	case uint64:
+		return strconv.FormatUint(rValue, 10)
+	case uintptr:
+		return strconv.FormatUint(uint64(rValue), 10)
+	case float32:
+		return strconv.FormatFloat(float64(rValue), 'f', -1, 32)
+	case float64:
+		return strconv.FormatFloat(rValue, 'f', -1, 64)
+	case bool:
+		return strconv.FormatBool(rValue)
+	case string:
+		return rValue
+	default:
+		return ""
+	}
+}
+
+func trimDecimal(s string) string {
+	if idx := strings.IndexByte(s, '.'); idx != -1 {
+		return s[:idx]
+	}
+	return s
 }

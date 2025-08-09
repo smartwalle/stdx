@@ -6,6 +6,50 @@ import (
 	"testing"
 )
 
+func TestBool(t *testing.T) {
+	var tests = []struct {
+		v interface{}
+		r bool
+	}{
+		{"true", true},
+		{"t", true},
+		{"1", true},
+		{"0", false},
+		{"2", false},
+		{"false", false},
+		{0, false},
+		{2, true},
+		{-2, true},
+		{1, true},
+	}
+
+	for _, tt := range tests {
+		if actual := stdx.Bool(tt.v); actual != tt.r {
+			t.Errorf("把 %v 转换为 bool, 期望获得 %v, 实际获得  %v", tt.v, tt.r, actual)
+		}
+	}
+}
+
+func TestFloat64(t *testing.T) {
+	var tests = []struct {
+		v interface{}
+		r float64
+	}{
+		{"9.9", 9.9},
+		{"9.99", 9.99},
+		{"9.91", 9.91},
+		{"9.90", 9.90},
+		{"9.901", 9.901},
+		{"9.001", 9.001},
+	}
+
+	for _, tt := range tests {
+		if actual := stdx.Float64(tt.v); actual != tt.r {
+			t.Errorf("把 %v 转换为 float64, 期望获得 %f, 实际获得  %f", tt.v, tt.r, actual)
+		}
+	}
+}
+
 func TestInt(t *testing.T) {
 	var tests = []struct {
 		v interface{}
@@ -196,6 +240,25 @@ func TestUint64(t *testing.T) {
 	for _, tt := range tests {
 		if actual := stdx.Uint64(tt.v); actual != tt.r {
 			t.Errorf("把 %v 转换为 Uint64, 期望获得 %d, 实际获得  %d", tt.v, tt.r, actual)
+		}
+	}
+}
+
+func TestString(t *testing.T) {
+	var tests = []struct {
+		v interface{}
+		r string
+	}{
+		{"1", "1"},
+		{1, "1"},
+		{1.1, "1.1"},
+		{true, "true"},
+		{3414416614257328130, "3414416614257328130"},
+	}
+
+	for _, tt := range tests {
+		if actual := stdx.String(tt.v); actual != tt.r {
+			t.Errorf("把 %v 转换为 string, 期望获得 %v, 实际获得  %v", tt.v, tt.r, actual)
 		}
 	}
 }
