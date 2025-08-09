@@ -37,7 +37,7 @@ func (s String) Between(start, end int) string {
 	return string(runes[start : end+1])
 }
 
-// Count 返回字符数量(UTF8)
+// Count 返回字符数量
 func (s String) Count() int {
 	return utf8.RuneCountInString(string(s))
 }
