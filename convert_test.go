@@ -24,7 +24,7 @@ func TestToBool(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		if actual := stdx.ToBool(tt.v); actual != tt.r {
+		if actual, _ := stdx.ToBool(tt.v); actual != tt.r {
 			t.Errorf("把 %v 转换为 bool, 期望获得 %v, 实际获得  %v", tt.v, tt.r, actual)
 		}
 	}
@@ -44,7 +44,7 @@ func TestToFloat64(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		if actual := stdx.ToFloat64(tt.v); actual != tt.r {
+		if actual, _ := stdx.ToFloat64(tt.v); actual != tt.r {
 			t.Errorf("把 %v 转换为 float64, 期望获得 %f, 实际获得  %f", tt.v, tt.r, actual)
 		}
 	}
@@ -74,7 +74,7 @@ func TestToInt(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		if actual := stdx.ToInt(tt.v); actual != tt.r {
+		if actual, _ := stdx.ToInt(tt.v); actual != tt.r {
 			t.Errorf("把 %v 转换为 int, 期望获得 %d, 实际获得  %d", tt.v, tt.r, actual)
 		}
 	}
@@ -104,7 +104,7 @@ func TestToInt64(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		if actual := stdx.ToInt64(tt.v); actual != tt.r {
+		if actual, _ := stdx.ToInt64(tt.v); actual != tt.r {
 			t.Errorf("把 %v 转换为 int64, 期望获得 %d, 实际获得  %d", tt.v, tt.r, actual)
 		}
 	}
@@ -130,7 +130,7 @@ func TestToUint(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		if actual := stdx.ToUint(tt.v); actual != tt.r {
+		if actual, _ := stdx.ToUint(tt.v); actual != tt.r {
 			t.Errorf("把 %v 转换为 uint32, 期望获得 %d, 实际获得  %d", tt.v, tt.r, actual)
 		}
 	}
@@ -157,7 +157,7 @@ func TestToUint8(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		if actual := stdx.ToUint8(tt.v); actual != tt.r {
+		if actual, _ := stdx.ToUint8(tt.v); actual != tt.r {
 			t.Errorf("把 %v 转换为 uint8, 期望获得 %d, 实际获得  %d", tt.v, tt.r, actual)
 		}
 	}
@@ -184,7 +184,7 @@ func TestToUint16(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		if actual := stdx.ToUint16(tt.v); actual != tt.r {
+		if actual, _ := stdx.ToUint16(tt.v); actual != tt.r {
 			t.Errorf("把 %v 转换为 uint16, 期望获得 %d, 实际获得  %d", tt.v, tt.r, actual)
 		}
 	}
@@ -211,7 +211,7 @@ func TestToUint32(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		if actual := stdx.ToUint32(tt.v); actual != tt.r {
+		if actual, _ := stdx.ToUint32(tt.v); actual != tt.r {
 			t.Errorf("把 %v 转换为 uint32, 期望获得 %d, 实际获得  %d", tt.v, tt.r, actual)
 		}
 	}
@@ -238,7 +238,7 @@ func TestToUint64(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		if actual := stdx.ToUint64(tt.v); actual != tt.r {
+		if actual, _ := stdx.ToUint64(tt.v); actual != tt.r {
 			t.Errorf("把 %v 转换为 Uint64, 期望获得 %d, 实际获得  %d", tt.v, tt.r, actual)
 		}
 	}
@@ -259,7 +259,7 @@ func TestToString(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		if actual := stdx.ToString(tt.v); actual != tt.r {
+		if actual, _ := stdx.ToString(tt.v); actual != tt.r {
 			t.Errorf("把 %v 转换为 string, 期望获得 %v, 实际获得  %v", tt.v, tt.r, actual)
 		}
 	}
