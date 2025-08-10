@@ -255,6 +255,7 @@ func TestToString(t *testing.T) {
 		{true, "true"},
 		{3414416614257328130, "3414416614257328130"},
 		{[]byte("Hello世界"), "Hello世界"},
+		{[]rune("Hello世界"), "Hello世界"},
 	}
 
 	for _, tt := range tests {

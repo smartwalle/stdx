@@ -3,7 +3,6 @@ package stdx
 import (
 	"strings"
 	"unicode/utf8"
-	"unsafe"
 )
 
 // String 以字符为单位处理字符串
@@ -61,9 +60,4 @@ func (s String) Index(substr string) int {
 		return index
 	}
 	return utf8.RuneCountInString(string(s[:index]))
-}
-
-// Bytes 转换成 byte 切片，注意不能对返回的切片进行修改
-func (s String) Bytes() []byte {
-	return unsafe.Slice(unsafe.StringData(string(s)), len(s))
 }

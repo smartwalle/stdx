@@ -3,7 +3,6 @@ package stdx
 import (
 	"strconv"
 	"strings"
-	"unsafe"
 )
 
 func ToBool(value interface{}) bool {
@@ -610,7 +609,7 @@ func ToString(value interface{}) string {
 	case string:
 		return rValue
 	case []byte:
-		return unsafe.String(&rValue[0], len(rValue))
+		return string(rValue)
 	case []rune:
 		return string(rValue)
 	default:
