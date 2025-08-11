@@ -45,11 +45,10 @@ func (s String) Count() int {
 }
 
 // Index 返回子字符串在字符串中第一次出现的位置
-// 如果子字符串为空，返回 0
 // 如果字符串为空或子字符串不存在，返回 -1
 func (s String) Index(substr string) int {
 	if substr == "" {
-		return 0
+		return -1
 	}
 	if s == "" {
 		return -1
