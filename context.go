@@ -6,15 +6,15 @@ import (
 )
 
 type Context struct {
-	context.Context
+	ctx    context.Context
 	cancel context.CancelFunc
 }
 
 func NewContext(parent context.Context) *Context {
 	ctx, cancel := context.WithCancel(parent)
 	return &Context{
-		Context: ctx,
-		cancel:  cancel,
+		ctx:    ctx,
+		cancel: cancel,
 	}
 }
 
@@ -25,8 +25,8 @@ func NewContextWithTimeout(parent context.Context, timeout time.Duration, cause 
 	}
 	ctx, cancel := context.WithTimeoutCause(parent, timeout, err)
 	return &Context{
-		Context: ctx,
-		cancel:  cancel,
+		ctx:    ctx,
+		cancel: cancel,
 	}
 }
 
@@ -37,13 +37,29 @@ func NewContextWithDeadline(parent context.Context, deadline time.Time, cause ..
 	}
 	ctx, cancel := context.WithDeadlineCause(parent, deadline, err)
 	return &Context{
-		Context: ctx,
-		cancel:  cancel,
+		ctx:    ctx,
+		cancel: cancel,
 	}
 }
 
+func (c *Context) Deadline() (deadline time.Time, ok bool) {
+	return c.ctx.Deadline()
+}
+
+func (c *Context) Done() <-chan struct{} {
+	return c.ctx.Done()
+}
+
+func (c *Context) Err() error {
+	return c.ctx.Err()
+}
+
+func (c *Context) Value(key any) any {
+	return c.ctx.Value(key)
+}
+
 func (c *Context) Wait() {
-	<-c.Done()
+	<-c.ctx.Done()
 }
 
 func (c *Context) Cancel() {
@@ -60,5 +76,5 @@ func (c *Context) Cancelled() bool {
 }
 
 func (c *Context) Cause() error {
-	return context.Cause(c.Context)
+	return context.Cause(c.ctx)
 }
