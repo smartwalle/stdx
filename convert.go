@@ -2,6 +2,7 @@ package stdx
 
 import (
 	"errors"
+	"fmt"
 	"strconv"
 	"strings"
 )
@@ -701,6 +702,8 @@ func MustString(value interface{}, defaultValue string) string {
 
 func ToString(value interface{}) (string, error) {
 	switch rValue := value.(type) {
+	case fmt.Stringer:
+		return rValue.String(), nil
 	case int:
 		return strconv.FormatInt(int64(rValue), 10), nil
 	case int8:
