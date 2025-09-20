@@ -5,12 +5,7 @@ import (
 	"time"
 )
 
-var random *rand.Rand
-
-func init() {
-	var source = rand.NewSource(time.Now().UnixNano())
-	random = rand.New(source)
-}
+var random = rand.New(rand.NewSource(time.Now().UnixNano()))
 
 func Rand[T any](slices []T) T {
 	var n = len(slices)
