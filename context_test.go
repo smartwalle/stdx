@@ -17,15 +17,15 @@ func TestContext_Cancel(t *testing.T) {
 		ctx.Cancel()
 	}()
 
-	t.Log("waiting:", ctx.Cancelled())
+	t.Log("waiting:", ctx.Finished())
 	ctx.Wait()
-	t.Log("done:", ctx.Cancelled())
+	t.Log("done:", ctx.Finished())
 }
 
 func TestContext_Timeout(t *testing.T) {
 	var ctx = stdx.NewContextWithTimeout(context.Background(), time.Second*5)
 	defer ctx.Cancel()
-	t.Log("waiting:", ctx.Cancelled())
+	t.Log("waiting:", ctx.Finished())
 
 	go func() {
 		for {
@@ -40,13 +40,13 @@ func TestContext_Timeout(t *testing.T) {
 
 	ctx.Wait()
 
-	t.Log("done:", ctx.Cancelled(), ctx.Err(), ctx.Cause())
+	t.Log("done:", ctx.Finished(), ctx.Err(), ctx.Cause())
 }
 
 func TestContext_Deadline(t *testing.T) {
 	var ctx = stdx.NewContextWithDeadline(context.Background(), time.Now().Add(time.Second*5))
 	defer ctx.Cancel()
-	t.Log("waiting:", ctx.Cancelled())
+	t.Log("waiting:", ctx.Finished())
 
 	go func() {
 		for {
@@ -61,5 +61,5 @@ func TestContext_Deadline(t *testing.T) {
 
 	ctx.Wait()
 
-	t.Log("done:", ctx.Cancelled(), ctx.Err(), ctx.Cause())
+	t.Log("done:", ctx.Finished(), ctx.Err(), ctx.Cause())
 }

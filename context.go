@@ -66,9 +66,9 @@ func (c *Context) Cancel() {
 	c.cancel()
 }
 
-func (c *Context) Cancelled() bool {
+func (c *Context) Finished() bool {
 	select {
-	case <-c.Done():
+	case <-c.parent.Done():
 		return true
 	default:
 		return false
