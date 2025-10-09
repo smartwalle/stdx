@@ -10,14 +10,14 @@ import (
 var ErrUnsupportedValue = errors.New("unsupported value")
 
 func MustBool(value interface{}, defaultValue bool) bool {
-	var rValue, err = ToBool(value)
+	var rValue, err = Bool(value)
 	if err != nil {
 		return defaultValue
 	}
 	return rValue
 }
 
-func ToBool(value interface{}) (bool, error) {
+func Bool(value interface{}) (bool, error) {
 	switch rValue := value.(type) {
 	case int:
 		return rValue != 0, nil
@@ -56,14 +56,14 @@ func ToBool(value interface{}) (bool, error) {
 }
 
 func MustFloat32(value interface{}, defaultValue float32) float32 {
-	var rValue, err = ToFloat32(value)
+	var rValue, err = Float32(value)
 	if err != nil {
 		return defaultValue
 	}
 	return rValue
 }
 
-func ToFloat32(value interface{}) (float32, error) {
+func Float32(value interface{}) (float32, error) {
 	switch rValue := value.(type) {
 	case int:
 		return float32(rValue), nil
@@ -105,14 +105,14 @@ func ToFloat32(value interface{}) (float32, error) {
 }
 
 func MustFloat64(value interface{}, defaultValue float64) float64 {
-	var rValue, err = ToFloat64(value)
+	var rValue, err = Float64(value)
 	if err != nil {
 		return defaultValue
 	}
 	return rValue
 }
 
-func ToFloat64(value interface{}) (float64, error) {
+func Float64(value interface{}) (float64, error) {
 	switch rValue := value.(type) {
 	case int:
 		return float64(rValue), nil
@@ -154,14 +154,14 @@ func ToFloat64(value interface{}) (float64, error) {
 }
 
 func MustInt(value interface{}, defaultValue int) int {
-	var rValue, err = ToInt(value)
+	var rValue, err = Int(value)
 	if err != nil {
 		return defaultValue
 	}
 	return rValue
 }
 
-func ToInt(value interface{}) (int, error) {
+func Int(value interface{}) (int, error) {
 	switch rValue := value.(type) {
 	case int:
 		return rValue, nil
@@ -203,14 +203,14 @@ func ToInt(value interface{}) (int, error) {
 }
 
 func MustInt8(value interface{}, defaultValue int8) int8 {
-	var rValue, err = ToInt8(value)
+	var rValue, err = Int8(value)
 	if err != nil {
 		return defaultValue
 	}
 	return rValue
 }
 
-func ToInt8(value interface{}) (int8, error) {
+func Int8(value interface{}) (int8, error) {
 	switch rValue := value.(type) {
 	case int:
 		return int8(rValue), nil
@@ -252,14 +252,14 @@ func ToInt8(value interface{}) (int8, error) {
 }
 
 func MustInt16(value interface{}, defaultValue int16) int16 {
-	var rValue, err = ToInt16(value)
+	var rValue, err = Int16(value)
 	if err != nil {
 		return defaultValue
 	}
 	return rValue
 }
 
-func ToInt16(value interface{}) (int16, error) {
+func Int16(value interface{}) (int16, error) {
 	switch rValue := value.(type) {
 	case int:
 		return int16(rValue), nil
@@ -301,14 +301,14 @@ func ToInt16(value interface{}) (int16, error) {
 }
 
 func MustInt32(value interface{}, defaultValue int32) int32 {
-	var rValue, err = ToInt32(value)
+	var rValue, err = Int32(value)
 	if err != nil {
 		return defaultValue
 	}
 	return rValue
 }
 
-func ToInt32(value interface{}) (int32, error) {
+func Int32(value interface{}) (int32, error) {
 	switch rValue := value.(type) {
 	case int:
 		return int32(rValue), nil
@@ -350,14 +350,14 @@ func ToInt32(value interface{}) (int32, error) {
 }
 
 func MustInt64(value interface{}, defaultValue int64) int64 {
-	var rValue, err = ToInt64(value)
+	var rValue, err = Int64(value)
 	if err != nil {
 		return defaultValue
 	}
 	return rValue
 }
 
-func ToInt64(value interface{}) (int64, error) {
+func Int64(value interface{}) (int64, error) {
 	switch rValue := value.(type) {
 	case int:
 		return int64(rValue), nil
@@ -399,14 +399,14 @@ func ToInt64(value interface{}) (int64, error) {
 }
 
 func MustUint(value interface{}, defaultValue uint) uint {
-	var rValue, err = ToUint(value)
+	var rValue, err = Uint(value)
 	if err != nil {
 		return defaultValue
 	}
 	return rValue
 }
 
-func ToUint(value interface{}) (uint, error) {
+func Uint(value interface{}) (uint, error) {
 	switch rValue := value.(type) {
 	case int:
 		return uint(rValue), nil
@@ -448,14 +448,14 @@ func ToUint(value interface{}) (uint, error) {
 }
 
 func MustUint8(value interface{}, defaultValue uint8) uint8 {
-	var rValue, err = ToUint8(value)
+	var rValue, err = Uint8(value)
 	if err != nil {
 		return defaultValue
 	}
 	return rValue
 }
 
-func ToUint8(value interface{}) (uint8, error) {
+func Uint8(value interface{}) (uint8, error) {
 	switch rValue := value.(type) {
 	case int:
 		return uint8(rValue), nil
@@ -497,14 +497,14 @@ func ToUint8(value interface{}) (uint8, error) {
 }
 
 func MustUint16(value interface{}, defaultValue uint16) uint16 {
-	var rValue, err = ToUint16(value)
+	var rValue, err = Uint16(value)
 	if err != nil {
 		return defaultValue
 	}
 	return rValue
 }
 
-func ToUint16(value interface{}) (uint16, error) {
+func Uint16(value interface{}) (uint16, error) {
 	switch rValue := value.(type) {
 	case int:
 		return uint16(rValue), nil
@@ -546,14 +546,14 @@ func ToUint16(value interface{}) (uint16, error) {
 }
 
 func MustUint32(value interface{}, defaultValue uint32) uint32 {
-	var rValue, err = ToUint32(value)
+	var rValue, err = Uint32(value)
 	if err != nil {
 		return defaultValue
 	}
 	return rValue
 }
 
-func ToUint32(value interface{}) (uint32, error) {
+func Uint32(value interface{}) (uint32, error) {
 	switch rValue := value.(type) {
 	case int:
 		return uint32(rValue), nil
@@ -595,14 +595,14 @@ func ToUint32(value interface{}) (uint32, error) {
 }
 
 func MustUint64(value interface{}, defaultValue uint64) uint64 {
-	var rValue, err = ToUint64(value)
+	var rValue, err = Uint64(value)
 	if err != nil {
 		return defaultValue
 	}
 	return rValue
 }
 
-func ToUint64(value interface{}) (uint64, error) {
+func Uint64(value interface{}) (uint64, error) {
 	switch rValue := value.(type) {
 	case int:
 		return uint64(rValue), nil
@@ -644,14 +644,14 @@ func ToUint64(value interface{}) (uint64, error) {
 }
 
 func MustUintptr(value interface{}, defaultValue uintptr) uintptr {
-	var rValue, err = ToUintptr(value)
+	var rValue, err = Uintptr(value)
 	if err != nil {
 		return defaultValue
 	}
 	return rValue
 }
 
-func ToUintptr(value interface{}) (uintptr, error) {
+func Uintptr(value interface{}) (uintptr, error) {
 	switch rValue := value.(type) {
 	case int:
 		return uintptr(rValue), nil
@@ -693,14 +693,14 @@ func ToUintptr(value interface{}) (uintptr, error) {
 }
 
 func MustString(value interface{}, defaultValue string) string {
-	var rValue, err = ToString(value)
+	var rValue, err = String(value)
 	if err != nil {
 		return defaultValue
 	}
 	return rValue
 }
 
-func ToString(value interface{}) (string, error) {
+func String(value interface{}) (string, error) {
 	switch rValue := value.(type) {
 	case fmt.Stringer:
 		return rValue.String(), nil

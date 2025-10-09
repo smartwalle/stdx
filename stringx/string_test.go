@@ -1,15 +1,14 @@
-package stdx_test
+package stringx_test
 
 import (
+	"github.com/smartwalle/stdx/stringx"
 	"testing"
-
-	"github.com/smartwalle/stdx"
 )
 
 func TestString_Sub(t *testing.T) {
 	tests := []struct {
 		name     string
-		s        stdx.String
+		s        string
 		start    int
 		length   int
 		expected string
@@ -30,7 +29,7 @@ func TestString_Sub(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result := tt.s.Sub(tt.start, tt.length)
+			result := stringx.Sub(tt.s, tt.start, tt.length)
 			if result != tt.expected {
 				t.Errorf("Sub(%q, %d, %d) = %q, 期望 %q", tt.s, tt.start, tt.length, result, tt.expected)
 			}
@@ -41,7 +40,7 @@ func TestString_Sub(t *testing.T) {
 func TestString_Between(t *testing.T) {
 	tests := []struct {
 		name     string
-		s        stdx.String
+		s        string
 		start    int
 		end      int
 		expected string
@@ -64,7 +63,7 @@ func TestString_Between(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result := tt.s.Between(tt.start, tt.end)
+			result := stringx.Between(tt.s, tt.start, tt.end)
 			if result != tt.expected {
 				t.Errorf("Between(%q, %d, %d) = %q, 期望 %q", tt.s, tt.start, tt.end, result, tt.expected)
 			}
@@ -75,7 +74,7 @@ func TestString_Between(t *testing.T) {
 func TestString_Count(t *testing.T) {
 	tests := []struct {
 		name     string
-		s        stdx.String
+		s        string
 		expected int
 	}{
 		{"英文字符", "Hello", 5},
@@ -91,7 +90,7 @@ func TestString_Count(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result := tt.s.Count()
+			result := stringx.Count(tt.s)
 			if result != tt.expected {
 				t.Errorf("Count(%q) = %d, 期望 %d", tt.s, result, tt.expected)
 			}
@@ -102,7 +101,7 @@ func TestString_Count(t *testing.T) {
 func TestString_Index(t *testing.T) {
 	tests := []struct {
 		name     string
-		s        stdx.String
+		s        string
 		substr   string
 		expected int
 	}{
@@ -130,7 +129,7 @@ func TestString_Index(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result := tt.s.Index(tt.substr)
+			result := stringx.Index(tt.s, tt.substr)
 			if result != tt.expected {
 				t.Errorf("Index(%q, %q) = %d, 期望 %d", tt.s, tt.substr, result, tt.expected)
 			}

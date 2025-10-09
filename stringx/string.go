@@ -1,15 +1,12 @@
-package stdx
+package stringx
 
 import (
 	"strings"
 	"unicode/utf8"
 )
 
-// String 以字符为单位处理字符串
-type String string
-
 // Sub 从指定位置开始提取指定长度的子字符串
-func (s String) Sub(start, length int) string {
+func Sub(s string, start, length int) string {
 	if s == "" || start < 0 || length <= 0 {
 		return ""
 	}
@@ -25,7 +22,7 @@ func (s String) Sub(start, length int) string {
 }
 
 // Between 提取两个位置之间的子字符串(闭合区间)
-func (s String) Between(start, end int) string {
+func Between(s string, start, end int) string {
 	if s == "" || start < 0 || end < start {
 		return ""
 	}
@@ -40,13 +37,13 @@ func (s String) Between(start, end int) string {
 }
 
 // Count 返回字符数量
-func (s String) Count() int {
-	return utf8.RuneCountInString(string(s))
+func Count(s string) int {
+	return utf8.RuneCountInString(s)
 }
 
 // Index 返回子字符串在字符串中第一次出现的位置
 // 如果字符串为空或子字符串不存在，返回 -1
-func (s String) Index(substr string) int {
+func Index(s string, substr string) int {
 	if substr == "" {
 		return -1
 	}
@@ -54,9 +51,9 @@ func (s String) Index(substr string) int {
 		return -1
 	}
 
-	var index = strings.Index(string(s), substr)
+	var index = strings.Index(s, substr)
 	if index < 0 {
 		return index
 	}
-	return utf8.RuneCountInString(string(s[:index]))
+	return utf8.RuneCountInString(s[:index])
 }
