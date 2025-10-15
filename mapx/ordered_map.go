@@ -126,7 +126,10 @@ func (m *OrderedMap[K, V]) decode(b []byte) error {
 			}
 		}
 
-		var rawKey = token.(string)
+		var rawKey, ok = token.(string)
+		if !ok {
+			continue
+		}
 
 		var key K
 		switch any(key).(type) {
@@ -240,10 +243,6 @@ func skip(decoder *json.Decoder, s json.Delim) error {
 }
 
 func (m OrderedMap[K, V]) MarshalJSON() ([]byte, error) {
-	if m.keys == nil || m.values == nil {
-		return []byte("null"), nil
-	}
-
 	var buf = bytes.NewBufferString("{")
 	var encoder = json.NewEncoder(buf)
 
