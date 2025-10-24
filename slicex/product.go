@@ -1,6 +1,6 @@
 package slicex
 
-// CartesianProduct 笛卡尔积
+// Product 笛卡尔积
 //
 // 假设存在：
 // 数组 A = [1, 2, 3, 4]
@@ -59,7 +59,7 @@ package slicex
 // 新数组第二个元素：取自第二个数组，元素下标为（索引值 / 第一个数组的长度 % 第二个数组的长度），
 // 新数组第三个元素：取自第三个数组，元素下标为（索引值 / 第一个数组的长度 / 第二个数组的长度 % 第三个数组的长度），
 // 如果还有更多的数组，以此类推。
-func CartesianProduct[T any](slice [][]T) [][]T {
+func Product[T any](slice [][]T) [][]T {
 	var total = 1
 	for _, s := range slice {
 		total = total * len(s)
