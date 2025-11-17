@@ -18,7 +18,7 @@ func NewContext(parent context.Context) *Context {
 	}
 }
 
-func NewContextWithTimeout(parent context.Context, timeout time.Duration, cause ...error) *Context {
+func ContextWithTimeout(parent context.Context, timeout time.Duration, cause ...error) *Context {
 	var err error
 	if len(cause) > 0 {
 		err = cause[0]
@@ -30,7 +30,7 @@ func NewContextWithTimeout(parent context.Context, timeout time.Duration, cause 
 	}
 }
 
-func NewContextWithDeadline(parent context.Context, deadline time.Time, cause ...error) *Context {
+func ContextWithDeadline(parent context.Context, deadline time.Time, cause ...error) *Context {
 	var err error
 	if len(cause) > 0 {
 		err = cause[0]
