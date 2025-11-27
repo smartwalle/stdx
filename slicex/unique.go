@@ -16,7 +16,7 @@ func Unique[T any, K comparable](slice []T, fn func(elem T) K) []T {
 			continue
 		}
 		keyMap[key] = struct{}{}
-		ns = Append(ns, elem)
+		ns = append(ns, elem)
 	}
 	return ns
 }

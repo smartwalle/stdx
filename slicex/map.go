@@ -22,7 +22,7 @@ func MapMatched[T any, R any](slice []T, predicate func(elem T) bool, fn func(el
 	var ns = make([]R, 0, n)
 	for _, elem := range slice {
 		if predicate(elem) {
-			ns = Append(ns, fn(elem))
+			ns = append(ns, fn(elem))
 		}
 	}
 	return ns

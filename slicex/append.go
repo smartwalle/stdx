@@ -1,6 +1,6 @@
 package slicex
 
-// Append 追加元素到 slice
+// Append 追加元素到 slice，适用于没有明确指定 slice 容量的场景
 func Append[T any](slice []T, elems ...T) []T {
 	var n = len(slice)
 	var c = cap(slice)
