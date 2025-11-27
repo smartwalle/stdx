@@ -121,7 +121,7 @@ func TestFilter(t *testing.T) {
 	}
 }
 
-func TestFilterX(t *testing.T) {
+func TestOptimizedFilter(t *testing.T) {
 	var tests = []struct {
 		name     string
 		source   []int
@@ -232,7 +232,7 @@ func TestFilterX(t *testing.T) {
 			sourceCopy := make([]int, len(test.source))
 			copy(sourceCopy, test.source)
 
-			var actual = slicex.FilterX(sourceCopy, test.fn)
+			var actual = slicex.OptimizedFilter(sourceCopy, test.fn)
 			if !slicex.Equals(actual, test.expected, IntEqual) {
 				t.Fatalf("实际: %+v, 预期: %+v", actual, test.expected)
 			}
@@ -292,7 +292,7 @@ func TestFilterWithStrings(t *testing.T) {
 	}
 }
 
-func TestFilterXWithStrings(t *testing.T) {
+func TestOptimizedFilterWithStrings(t *testing.T) {
 	// 测试字符串类型的FilterX
 	var tests = []struct {
 		name     string
@@ -340,7 +340,7 @@ func TestFilterXWithStrings(t *testing.T) {
 			sourceCopy := make([]string, len(test.source))
 			copy(sourceCopy, test.source)
 
-			var actual = slicex.FilterX(sourceCopy, test.fn)
+			var actual = slicex.OptimizedFilter(sourceCopy, test.fn)
 			if !slicex.Equals(actual, test.expected, StringEqual) {
 				t.Fatalf("实际: %+v, 预期: %+v", actual, test.expected)
 			}
@@ -414,7 +414,7 @@ func TestFilterWithStructs(t *testing.T) {
 	}
 }
 
-func TestFilterXWithStructs(t *testing.T) {
+func TestOptimizedFilterWithStructs(t *testing.T) {
 	// 测试自定义结构体类型的FilterX
 	type Person struct {
 		Name string
@@ -474,7 +474,7 @@ func TestFilterXWithStructs(t *testing.T) {
 			sourceCopy := make([]Person, len(test.source))
 			copy(sourceCopy, test.source)
 
-			var actual = slicex.FilterX(sourceCopy, test.fn)
+			var actual = slicex.OptimizedFilter(sourceCopy, test.fn)
 			if !slicex.Equals(actual, test.expected, func(a, b Person) bool {
 				return a.Name == b.Name && a.Age == b.Age
 			}) {
