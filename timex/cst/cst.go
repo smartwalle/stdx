@@ -44,6 +44,6 @@ func UnixMilli(msec int64) Time {
 	return timex.UnixMilli[Timezone](msec)
 }
 
-func FromTime(t time.Time) Time {
+func FromTime(t timex.UTCTime) Time {
 	return timex.FromTime[Timezone](t)
 }

@@ -5,6 +5,10 @@ import (
 	"time"
 )
 
+func Location() *time.Location {
+	return time.UTC
+}
+
 type Timezone struct {
 }
 

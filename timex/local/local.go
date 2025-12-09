@@ -5,6 +5,10 @@ import (
 	"time"
 )
 
+func Location() *time.Location {
+	return time.Local
+}
+
 type Timezone struct {
 }
 
@@ -38,6 +42,6 @@ func UnixMilli(msec int64) Time {
 	return timex.UnixMilli[Timezone](msec)
 }
 
-func FromTime(t time.Time) Time {
+func FromTime(t timex.UTCTime) Time {
 	return timex.FromTime[Timezone](t)
 }

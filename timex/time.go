@@ -6,6 +6,10 @@ import (
 	"time"
 )
 
+type UTCTime interface {
+	UTC() time.Time
+}
+
 type Time[T Timezone] struct {
 	utc time.Time
 }
@@ -41,7 +45,7 @@ func UnixMilli[T Timezone](msec int64) Time[T] {
 	return Time[T]{utc: time.UnixMilli(msec)}
 }
 
-func FromTime[T Timezone](t time.Time) Time[T] {
+func FromTime[T Timezone](t UTCTime) Time[T] {
 	return Time[T]{utc: t.UTC()}
 }
 
@@ -49,20 +53,20 @@ func (t Time[T]) IsZero() bool {
 	return t.utc.IsZero()
 }
 
-func (t Time[T]) After(u Time[T]) bool {
-	return t.utc.After(u.utc)
+func (t Time[T]) After(u UTCTime) bool {
+	return t.utc.After(u.UTC())
 }
 
-func (t Time[T]) Before(u Time[T]) bool {
-	return t.utc.Before(u.utc)
+func (t Time[T]) Before(u UTCTime) bool {
+	return t.utc.Before(u.UTC())
 }
 
-func (t Time[T]) Compare(u Time[T]) int {
-	return t.utc.Compare(u.utc)
+func (t Time[T]) Compare(u UTCTime) int {
+	return t.utc.Compare(u.UTC())
 }
 
-func (t Time[T]) Equal(u Time[T]) bool {
-	return t.utc.Equal(u.utc)
+func (t Time[T]) Equal(u UTCTime) bool {
+	return t.utc.Equal(u.UTC())
 }
 
 func (t Time[T]) Date() (year int, month time.Month, day int) {
@@ -125,8 +129,8 @@ func (t Time[T]) Add(d time.Duration) Time[T] {
 	return Time[T]{utc: t.utc.Add(d)}
 }
 
-func (t Time[T]) Sub(u Time[T]) time.Duration {
-	return t.utc.Sub(u.utc)
+func (t Time[T]) Sub(u UTCTime) time.Duration {
+	return t.utc.Sub(u.UTC())
 }
 
 func (t Time[T]) AddDate(years int, months int, days int) Time[T] {
