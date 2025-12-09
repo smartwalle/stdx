@@ -99,11 +99,7 @@ func (g *Group) TryGo(fn func(context.Context) error) bool {
 }
 
 func (g *Group) Limit(n int) bool {
-	if n < 0 {
-		g.sem = nil
-		return true
-	}
-	if len(g.sem) != 0 {
+	if n < 1 || g.sem != nil {
 		return false
 	}
 	g.sem = make(chan struct{}, n)
