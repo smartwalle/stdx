@@ -69,6 +69,14 @@ func (t Time[T]) Equal(u UTCTime) bool {
 	return t.utc.Equal(u.UTC())
 }
 
+func (t Time[T]) InRange(u1 UTCTime, u2 UTCTime) bool {
+	if u1.UTC().After(u2.UTC()) {
+		u1, u2 = u2, u1
+	}
+	var unix = t.Unix()
+	return unix >= u1.UTC().Unix() && unix <= u2.UTC().Unix()
+}
+
 func (t Time[T]) Date() (year int, month time.Month, day int) {
 	return t.Time().Date()
 }
@@ -427,4 +435,13 @@ func BeginningOfYear(year int) time.Time {
 // EndOfYear 获取指定年份的结束时间
 func EndOfYear(year int) time.Time {
 	return time.Date(year, time.December, DaysInMonth(year, time.December), 23, 59, 59, int(time.Second-time.Nanosecond), time.Local)
+}
+
+// InRange 判断时间是否在指定时间范围内(包含边界值)
+func InRange(t UTCTime, u1 UTCTime, u2 UTCTime) bool {
+	if u1.UTC().After(u2.UTC()) {
+		u1, u2 = u2, u1
+	}
+	var unix = t.UTC().Unix()
+	return unix >= u1.UTC().Unix() && unix <= u2.UTC().Unix()
 }
