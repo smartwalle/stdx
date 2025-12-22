@@ -6,7 +6,7 @@ import (
 	"github.com/smartwalle/stdx/slicex"
 )
 
-func TestAggregate(t *testing.T) {
+func TestReduce(t *testing.T) {
 	tests := []struct {
 		name     string
 		source   []int
@@ -51,7 +51,7 @@ func TestAggregate(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			actual := slicex.Aggregate(test.source, test.initial, test.fn)
+			actual := slicex.Reduce(test.source, test.initial, test.fn)
 			if actual != test.expected {
 				t.Errorf("实际: %v, 预期： %v", actual, test.expected)
 			}
@@ -59,7 +59,7 @@ func TestAggregate(t *testing.T) {
 	}
 }
 
-func TestAggregateWithStrings(t *testing.T) {
+func TestReduceWithStrings(t *testing.T) {
 	tests := []struct {
 		name     string
 		source   []string
@@ -78,7 +78,7 @@ func TestAggregateWithStrings(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			actual := slicex.Aggregate(test.source, test.initial, test.fn)
+			actual := slicex.Reduce(test.source, test.initial, test.fn)
 			if actual != test.expected {
 				t.Errorf("实际: %v, 预期: %v", actual, test.expected)
 			}
@@ -86,7 +86,7 @@ func TestAggregateWithStrings(t *testing.T) {
 	}
 }
 
-func TestAggregateWithMultiStats(t *testing.T) {
+func TestReduceWithMultiStats(t *testing.T) {
 	type stats struct {
 		min   int
 		max   int
@@ -96,7 +96,7 @@ func TestAggregateWithMultiStats(t *testing.T) {
 
 	source := []int{5, 2, 8, 1, 9}
 	initial := stats{min: source[0], max: source[0], sum: 0, count: 0}
-	actual := slicex.Aggregate(source, initial, func(acc stats, x int) stats {
+	actual := slicex.Reduce(source, initial, func(acc stats, x int) stats {
 		if x < acc.min {
 			acc.min = x
 		}
