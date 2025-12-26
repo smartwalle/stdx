@@ -5,13 +5,14 @@ import (
 	"time"
 )
 
-func Sleep(ctx context.Context, duration time.Duration) {
+func Sleep(ctx context.Context, duration time.Duration) error {
 	var timer = time.NewTimer(duration)
+	defer timer.Stop()
+
 	select {
 	case <-ctx.Done():
-		timer.Stop()
-		return
+		return ctx.Err()
 	case <-timer.C:
-		return
+		return nil
 	}
 }
