@@ -11,5 +11,5 @@ func Insert[T any](slice []T, idx int, elems ...T) []T {
 	if idx >= len(slice) {
 		return append(slice, elems...)
 	}
-	return append(slice[:idx], append(elems, slice[idx:]...)...)
+	return append(slice[:idx:idx], append(elems, slice[idx:]...)...)
 }
