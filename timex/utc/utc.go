@@ -1,8 +1,9 @@
 package utc
 
 import (
-	"github.com/smartwalle/stdx/timex"
 	"time"
+
+	"github.com/smartwalle/stdx/timex"
 )
 
 func Location() *time.Location {

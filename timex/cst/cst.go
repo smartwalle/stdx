@@ -1,8 +1,9 @@
 package cst
 
 import (
-	"github.com/smartwalle/stdx/timex"
 	"time"
+
+	"github.com/smartwalle/stdx/timex"
 )
 
 var location = timex.MustLoadLocation("Asia/Shanghai")
