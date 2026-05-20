@@ -335,7 +335,7 @@ func (t Time[T]) BeginningOfMonth() Time[T] {
 
 // EndOfMonth 获取当前日期所在月的结束时间
 func (t Time[T]) EndOfMonth() Time[T] {
-	return Date[T](t.Year(), t.Month(), DaysInMonth(t.Year(), t.Month()), 23, 59, 59, int(time.Second-time.Nanosecond))
+	return Date[T](t.Year(), t.Month()+1, 0, 23, 59, 59, int(time.Second-time.Nanosecond))
 }
 
 // BeginningOfQuarter 获取当前日期所在季度的开始时间
@@ -347,7 +347,7 @@ func (t Time[T]) BeginningOfQuarter() Time[T] {
 // EndOfQuarter 获取当前日期所在季度的结束时间
 func (t Time[T]) EndOfQuarter() Time[T] {
 	var m = time.Month(int(t.Month()-1)/3*3 + 3)
-	return Date[T](t.Year(), m, DaysInMonth(t.Year(), m), 23, 59, 59, int(time.Second-time.Nanosecond))
+	return Date[T](t.Year(), m+1, 0, 23, 59, 59, int(time.Second-time.Nanosecond))
 }
 
 // BeginningOfYear 获取当前日期所在年的开始时间
@@ -357,7 +357,7 @@ func (t Time[T]) BeginningOfYear() Time[T] {
 
 // EndOfYear 获取当前日期所在年的结束时间
 func (t Time[T]) EndOfYear() Time[T] {
-	return Date[T](t.Year(), time.December, DaysInMonth(t.Year(), time.December), 23, 59, 59, int(time.Second-time.Nanosecond))
+	return Date[T](t.Year(), time.December+1, 0, 23, 59, 59, int(time.Second-time.Nanosecond))
 }
 
 func LeapYear(year int) bool {
@@ -412,7 +412,7 @@ func BeginningOfMonth(year int, month time.Month) time.Time {
 
 // EndOfMonth 获取指定月份的结束时间
 func EndOfMonth(year int, month time.Month) time.Time {
-	return time.Date(year, month, DaysInMonth(year, month), 23, 59, 59, int(time.Second-time.Nanosecond), time.Local)
+	return time.Date(year, month+1, 0, 23, 59, 59, int(time.Second-time.Nanosecond), time.Local)
 }
 
 // BeginningOfQuarter 获取指定季度的开始时间
@@ -424,7 +424,7 @@ func BeginningOfQuarter(year int, quarter int) time.Time {
 // EndOfQuarter 获取指定季度的结束时间
 func EndOfQuarter(year int, quarter int) time.Time {
 	var m = time.Month((quarter-1)*3 + 3)
-	return time.Date(year, m, DaysInMonth(year, m), 23, 59, 59, int(time.Second-time.Nanosecond), time.Local)
+	return time.Date(year, m+1, 0, 23, 59, 59, int(time.Second-time.Nanosecond), time.Local)
 }
 
 // BeginningOfYear 获取指定年份的开始时间
@@ -434,7 +434,7 @@ func BeginningOfYear(year int) time.Time {
 
 // EndOfYear 获取指定年份的结束时间
 func EndOfYear(year int) time.Time {
-	return time.Date(year, time.December, DaysInMonth(year, time.December), 23, 59, 59, int(time.Second-time.Nanosecond), time.Local)
+	return time.Date(year, time.December+1, 0, 23, 59, 59, int(time.Second-time.Nanosecond), time.Local)
 }
 
 // InRange 判断时间是否在指定时间范围内(包含边界值)
