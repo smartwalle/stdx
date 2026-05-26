@@ -3,6 +3,7 @@ package stdx
 import (
 	"errors"
 	"fmt"
+	"reflect"
 	"strconv"
 	"strings"
 )
@@ -51,7 +52,31 @@ func Bool(value interface{}) (bool, error) {
 		var nValue, err = strconv.ParseBool(rValue)
 		return nValue, err
 	default:
-		return false, ErrUnsupportedValue
+		var refValue = reflect.ValueOf(value)
+		if !refValue.IsValid() {
+			return false, nil
+		}
+		var refKind = refValue.Kind()
+
+		switch refKind {
+		case reflect.Ptr:
+			if refValue.IsNil() {
+				return false, nil
+			}
+			return Bool(refValue.Elem().Interface())
+		case reflect.Bool:
+			return Bool(refValue.Bool())
+		case reflect.String:
+			return Bool(refValue.String())
+		case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+			return Bool(refValue.Int())
+		case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64, reflect.Uintptr:
+			return Bool(refValue.Uint())
+		case reflect.Float32, reflect.Float64:
+			return Bool(refValue.Float())
+		default:
+			return false, ErrUnsupportedValue
+		}
 	}
 }
 
@@ -100,7 +125,31 @@ func Float32(value interface{}) (float32, error) {
 		var nValue, err = strconv.ParseFloat(rValue, 32)
 		return float32(nValue), err
 	default:
-		return 0, ErrUnsupportedValue
+		var refValue = reflect.ValueOf(value)
+		if !refValue.IsValid() {
+			return 0, nil
+		}
+		var refKind = refValue.Kind()
+
+		switch refKind {
+		case reflect.Ptr:
+			if refValue.IsNil() {
+				return 0, nil
+			}
+			return Float32(refValue.Elem().Interface())
+		case reflect.Bool:
+			return Float32(refValue.Bool())
+		case reflect.String:
+			return Float32(refValue.String())
+		case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+			return Float32(refValue.Int())
+		case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64, reflect.Uintptr:
+			return Float32(refValue.Uint())
+		case reflect.Float32, reflect.Float64:
+			return Float32(refValue.Float())
+		default:
+			return 0, ErrUnsupportedValue
+		}
 	}
 }
 
@@ -149,7 +198,31 @@ func Float64(value interface{}) (float64, error) {
 		var nValue, err = strconv.ParseFloat(rValue, 64)
 		return nValue, err
 	default:
-		return 0, ErrUnsupportedValue
+		var refValue = reflect.ValueOf(value)
+		if !refValue.IsValid() {
+			return 0, nil
+		}
+		var refKind = refValue.Kind()
+
+		switch refKind {
+		case reflect.Ptr:
+			if refValue.IsNil() {
+				return 0, nil
+			}
+			return Float64(refValue.Elem().Interface())
+		case reflect.Bool:
+			return Float64(refValue.Bool())
+		case reflect.String:
+			return Float64(refValue.String())
+		case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+			return Float64(refValue.Int())
+		case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64, reflect.Uintptr:
+			return Float64(refValue.Uint())
+		case reflect.Float32, reflect.Float64:
+			return Float64(refValue.Float())
+		default:
+			return 0, ErrUnsupportedValue
+		}
 	}
 }
 
@@ -198,7 +271,31 @@ func Int(value interface{}) (int, error) {
 		var nValue, err = strconv.ParseInt(trimDecimal(rValue), 10, 64)
 		return int(nValue), err
 	default:
-		return 0, ErrUnsupportedValue
+		var refValue = reflect.ValueOf(value)
+		if !refValue.IsValid() {
+			return 0, nil
+		}
+		var refKind = refValue.Kind()
+
+		switch refKind {
+		case reflect.Ptr:
+			if refValue.IsNil() {
+				return 0, nil
+			}
+			return Int(refValue.Elem().Interface())
+		case reflect.Bool:
+			return Int(refValue.Bool())
+		case reflect.String:
+			return Int(refValue.String())
+		case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+			return Int(refValue.Int())
+		case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64, reflect.Uintptr:
+			return Int(refValue.Uint())
+		case reflect.Float32, reflect.Float64:
+			return Int(refValue.Float())
+		default:
+			return 0, ErrUnsupportedValue
+		}
 	}
 }
 
@@ -247,7 +344,31 @@ func Int8(value interface{}) (int8, error) {
 		var nValue, err = strconv.ParseInt(trimDecimal(rValue), 10, 8)
 		return int8(nValue), err
 	default:
-		return 0, ErrUnsupportedValue
+		var refValue = reflect.ValueOf(value)
+		if !refValue.IsValid() {
+			return 0, nil
+		}
+		var refKind = refValue.Kind()
+
+		switch refKind {
+		case reflect.Ptr:
+			if refValue.IsNil() {
+				return 0, nil
+			}
+			return Int8(refValue.Elem().Interface())
+		case reflect.Bool:
+			return Int8(refValue.Bool())
+		case reflect.String:
+			return Int8(refValue.String())
+		case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+			return Int8(refValue.Int())
+		case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64, reflect.Uintptr:
+			return Int8(refValue.Uint())
+		case reflect.Float32, reflect.Float64:
+			return Int8(refValue.Float())
+		default:
+			return 0, ErrUnsupportedValue
+		}
 	}
 }
 
@@ -296,7 +417,31 @@ func Int16(value interface{}) (int16, error) {
 		var nValue, err = strconv.ParseInt(trimDecimal(rValue), 10, 16)
 		return int16(nValue), err
 	default:
-		return 0, ErrUnsupportedValue
+		var refValue = reflect.ValueOf(value)
+		if !refValue.IsValid() {
+			return 0, nil
+		}
+		var refKind = refValue.Kind()
+
+		switch refKind {
+		case reflect.Ptr:
+			if refValue.IsNil() {
+				return 0, nil
+			}
+			return Int16(refValue.Elem().Interface())
+		case reflect.Bool:
+			return Int16(refValue.Bool())
+		case reflect.String:
+			return Int16(refValue.String())
+		case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+			return Int16(refValue.Int())
+		case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64, reflect.Uintptr:
+			return Int16(refValue.Uint())
+		case reflect.Float32, reflect.Float64:
+			return Int16(refValue.Float())
+		default:
+			return 0, ErrUnsupportedValue
+		}
 	}
 }
 
@@ -345,7 +490,31 @@ func Int32(value interface{}) (int32, error) {
 		var nValue, err = strconv.ParseInt(trimDecimal(rValue), 10, 32)
 		return int32(nValue), err
 	default:
-		return 0, ErrUnsupportedValue
+		var refValue = reflect.ValueOf(value)
+		if !refValue.IsValid() {
+			return 0, nil
+		}
+		var refKind = refValue.Kind()
+
+		switch refKind {
+		case reflect.Ptr:
+			if refValue.IsNil() {
+				return 0, nil
+			}
+			return Int32(refValue.Elem().Interface())
+		case reflect.Bool:
+			return Int32(refValue.Bool())
+		case reflect.String:
+			return Int32(refValue.String())
+		case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+			return Int32(refValue.Int())
+		case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64, reflect.Uintptr:
+			return Int32(refValue.Uint())
+		case reflect.Float32, reflect.Float64:
+			return Int32(refValue.Float())
+		default:
+			return 0, ErrUnsupportedValue
+		}
 	}
 }
 
@@ -394,7 +563,31 @@ func Int64(value interface{}) (int64, error) {
 		var nValue, err = strconv.ParseInt(trimDecimal(rValue), 10, 64)
 		return nValue, err
 	default:
-		return 0, ErrUnsupportedValue
+		var refValue = reflect.ValueOf(value)
+		if !refValue.IsValid() {
+			return 0, nil
+		}
+		var refKind = refValue.Kind()
+
+		switch refKind {
+		case reflect.Ptr:
+			if refValue.IsNil() {
+				return 0, nil
+			}
+			return Int64(refValue.Elem().Interface())
+		case reflect.Bool:
+			return Int64(refValue.Bool())
+		case reflect.String:
+			return Int64(refValue.String())
+		case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+			return Int64(refValue.Int())
+		case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64, reflect.Uintptr:
+			return Int64(refValue.Uint())
+		case reflect.Float32, reflect.Float64:
+			return Int64(refValue.Float())
+		default:
+			return 0, ErrUnsupportedValue
+		}
 	}
 }
 
@@ -443,7 +636,31 @@ func Uint(value interface{}) (uint, error) {
 		var nValue, err = strconv.ParseUint(trimDecimal(rValue), 10, 64)
 		return uint(nValue), err
 	default:
-		return 0, ErrUnsupportedValue
+		var refValue = reflect.ValueOf(value)
+		if !refValue.IsValid() {
+			return 0, nil
+		}
+		var refKind = refValue.Kind()
+
+		switch refKind {
+		case reflect.Ptr:
+			if refValue.IsNil() {
+				return 0, nil
+			}
+			return Uint(refValue.Elem().Interface())
+		case reflect.Bool:
+			return Uint(refValue.Bool())
+		case reflect.String:
+			return Uint(refValue.String())
+		case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+			return Uint(refValue.Int())
+		case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64, reflect.Uintptr:
+			return Uint(refValue.Uint())
+		case reflect.Float32, reflect.Float64:
+			return Uint(refValue.Float())
+		default:
+			return 0, ErrUnsupportedValue
+		}
 	}
 }
 
@@ -492,7 +709,31 @@ func Uint8(value interface{}) (uint8, error) {
 		var nValue, err = strconv.ParseUint(trimDecimal(rValue), 10, 8)
 		return uint8(nValue), err
 	default:
-		return 0, ErrUnsupportedValue
+		var refValue = reflect.ValueOf(value)
+		if !refValue.IsValid() {
+			return 0, nil
+		}
+		var refKind = refValue.Kind()
+
+		switch refKind {
+		case reflect.Ptr:
+			if refValue.IsNil() {
+				return 0, nil
+			}
+			return Uint8(refValue.Elem().Interface())
+		case reflect.Bool:
+			return Uint8(refValue.Bool())
+		case reflect.String:
+			return Uint8(refValue.String())
+		case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+			return Uint8(refValue.Int())
+		case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64, reflect.Uintptr:
+			return Uint8(refValue.Uint())
+		case reflect.Float32, reflect.Float64:
+			return Uint8(refValue.Float())
+		default:
+			return 0, ErrUnsupportedValue
+		}
 	}
 }
 
@@ -541,7 +782,31 @@ func Uint16(value interface{}) (uint16, error) {
 		var nValue, err = strconv.ParseUint(trimDecimal(rValue), 10, 16)
 		return uint16(nValue), err
 	default:
-		return 0, ErrUnsupportedValue
+		var refValue = reflect.ValueOf(value)
+		if !refValue.IsValid() {
+			return 0, nil
+		}
+		var refKind = refValue.Kind()
+
+		switch refKind {
+		case reflect.Ptr:
+			if refValue.IsNil() {
+				return 0, nil
+			}
+			return Uint16(refValue.Elem().Interface())
+		case reflect.Bool:
+			return Uint16(refValue.Bool())
+		case reflect.String:
+			return Uint16(refValue.String())
+		case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+			return Uint16(refValue.Int())
+		case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64, reflect.Uintptr:
+			return Uint16(refValue.Uint())
+		case reflect.Float32, reflect.Float64:
+			return Uint16(refValue.Float())
+		default:
+			return 0, ErrUnsupportedValue
+		}
 	}
 }
 
@@ -590,7 +855,31 @@ func Uint32(value interface{}) (uint32, error) {
 		var nValue, err = strconv.ParseUint(trimDecimal(rValue), 10, 32)
 		return uint32(nValue), err
 	default:
-		return 0, ErrUnsupportedValue
+		var refValue = reflect.ValueOf(value)
+		if !refValue.IsValid() {
+			return 0, nil
+		}
+		var refKind = refValue.Kind()
+
+		switch refKind {
+		case reflect.Ptr:
+			if refValue.IsNil() {
+				return 0, nil
+			}
+			return Uint32(refValue.Elem().Interface())
+		case reflect.Bool:
+			return Uint32(refValue.Bool())
+		case reflect.String:
+			return Uint32(refValue.String())
+		case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+			return Uint32(refValue.Int())
+		case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64, reflect.Uintptr:
+			return Uint32(refValue.Uint())
+		case reflect.Float32, reflect.Float64:
+			return Uint32(refValue.Float())
+		default:
+			return 0, ErrUnsupportedValue
+		}
 	}
 }
 
@@ -639,7 +928,31 @@ func Uint64(value interface{}) (uint64, error) {
 		var nValue, err = strconv.ParseUint(trimDecimal(rValue), 10, 64)
 		return nValue, err
 	default:
-		return 0, ErrUnsupportedValue
+		var refValue = reflect.ValueOf(value)
+		if !refValue.IsValid() {
+			return 0, nil
+		}
+		var refKind = refValue.Kind()
+
+		switch refKind {
+		case reflect.Ptr:
+			if refValue.IsNil() {
+				return 0, nil
+			}
+			return Uint64(refValue.Elem().Interface())
+		case reflect.Bool:
+			return Uint64(refValue.Bool())
+		case reflect.String:
+			return Uint64(refValue.String())
+		case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+			return Uint64(refValue.Int())
+		case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64, reflect.Uintptr:
+			return Uint64(refValue.Uint())
+		case reflect.Float32, reflect.Float64:
+			return Uint64(refValue.Float())
+		default:
+			return 0, ErrUnsupportedValue
+		}
 	}
 }
 
@@ -688,7 +1001,31 @@ func Uintptr(value interface{}) (uintptr, error) {
 		var nValue, err = strconv.ParseUint(trimDecimal(rValue), 10, 64)
 		return uintptr(nValue), err
 	default:
-		return 0, nil
+		var refValue = reflect.ValueOf(value)
+		if !refValue.IsValid() {
+			return 0, nil
+		}
+		var refKind = refValue.Kind()
+
+		switch refKind {
+		case reflect.Ptr:
+			if refValue.IsNil() {
+				return 0, nil
+			}
+			return Uintptr(refValue.Elem().Interface())
+		case reflect.Bool:
+			return Uintptr(refValue.Bool())
+		case reflect.String:
+			return Uintptr(refValue.String())
+		case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+			return Uintptr(refValue.Int())
+		case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64, reflect.Uintptr:
+			return Uintptr(refValue.Uint())
+		case reflect.Float32, reflect.Float64:
+			return Uintptr(refValue.Float())
+		default:
+			return 0, ErrUnsupportedValue
+		}
 	}
 }
 
@@ -739,7 +1076,31 @@ func String(value interface{}) (string, error) {
 	case []rune:
 		return string(rValue), nil
 	default:
-		return "", ErrUnsupportedValue
+		var refValue = reflect.ValueOf(value)
+		if !refValue.IsValid() {
+			return "", nil
+		}
+		var refKind = refValue.Kind()
+
+		switch refKind {
+		case reflect.Ptr:
+			if refValue.IsNil() {
+				return "", nil
+			}
+			return String(refValue.Elem().Interface())
+		case reflect.Bool:
+			return String(refValue.Bool())
+		case reflect.String:
+			return String(refValue.String())
+		case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+			return String(refValue.Int())
+		case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64, reflect.Uintptr:
+			return String(refValue.Uint())
+		case reflect.Float32, reflect.Float64:
+			return String(refValue.Float())
+		default:
+			return "", ErrUnsupportedValue
+		}
 	}
 }
 

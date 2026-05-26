@@ -1,9 +1,10 @@
 package stdx_test
 
 import (
-	"github.com/smartwalle/stdx"
 	"math"
 	"testing"
+
+	"github.com/smartwalle/stdx"
 )
 
 func TestBool(t *testing.T) {
