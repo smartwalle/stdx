@@ -66,6 +66,30 @@ func (g *Group) Go(fn func(context.Context) error) {
 	}()
 }
 
+func (g *Group) Run(fn func(ctx context.Context) error) {
+	select {
+	case <-g.ctx.Done():
+		return
+	default:
+	}
+
+	if g.sem != nil {
+		select {
+		case <-g.ctx.Done():
+			return
+		case g.sem <- struct{}{}:
+		}
+	}
+
+	g.wg.Add(1)
+	go func() {
+		defer g.done()
+		if err := fn(g.ctx); err != nil {
+			g.err = err
+		}
+	}()
+}
+
 func (g *Group) TryGo(fn func(context.Context) error) bool {
 	select {
 	case <-g.ctx.Done():
