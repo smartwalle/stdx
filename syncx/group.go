@@ -54,7 +54,12 @@ func (g *Group) Go(fn func(context.Context) error) {
 
 	g.wg.Add(1)
 	go func() {
-		defer g.done()
+		defer func() {
+			if x := recover(); x != nil {
+				panic(x)
+			}
+			g.done()
+		}()
 		if err := fn(g.ctx); err != nil {
 			g.errOnce.Do(func() {
 				g.err = err
@@ -83,7 +88,12 @@ func (g *Group) Run(fn func(ctx context.Context) error) {
 
 	g.wg.Add(1)
 	go func() {
-		defer g.done()
+		defer func() {
+			if x := recover(); x != nil {
+				panic(x)
+			}
+			g.done()
+		}()
 		if err := fn(g.ctx); err != nil {
 			g.err = err
 		}
@@ -109,7 +119,12 @@ func (g *Group) TryGo(fn func(context.Context) error) bool {
 
 	g.wg.Add(1)
 	go func() {
-		defer g.done()
+		defer func() {
+			if x := recover(); x != nil {
+				panic(x)
+			}
+			g.done()
+		}()
 		if err := fn(g.ctx); err != nil {
 			g.errOnce.Do(func() {
 				g.err = err
