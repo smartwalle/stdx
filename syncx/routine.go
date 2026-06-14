@@ -5,6 +5,7 @@ import (
 	"errors"
 	"sync"
 	"sync/atomic"
+	"time"
 )
 
 var (
@@ -18,12 +19,16 @@ type Routine struct {
 
 	mu         sync.Mutex
 	cond       *sync.Cond
+	workers    int
 	submitters int
 
 	closed    chan struct{}
 	closeOnce sync.Once
 
 	workerWg sync.WaitGroup
+
+	workerSize  int
+	idleTimeout time.Duration
 
 	panicHandler atomic.Value
 }
@@ -39,15 +44,12 @@ func NewRoutine(workerSize int, queueSize int) *Routine {
 	}
 
 	var routine = &Routine{
-		tasks:  make(chan func(), queueSize),
-		closed: make(chan struct{}),
+		tasks:       make(chan func(), queueSize),
+		closed:      make(chan struct{}),
+		workerSize:  workerSize,
+		idleTimeout: time.Second,
 	}
 	routine.cond = sync.NewCond(&routine.mu)
-
-	routine.workerWg.Add(workerSize)
-	for i := 0; i < workerSize; i++ {
-		go routine.worker()
-	}
 
 	return routine
 }
@@ -133,6 +135,13 @@ func (r *Routine) beginSubmit() bool {
 	default:
 	}
 	r.submitters++
+
+	if r.workers < r.workerSize {
+		r.workers++
+		r.workerWg.Add(1)
+		go r.worker()
+	}
+
 	return true
 }
 
@@ -146,11 +155,59 @@ func (r *Routine) endSubmit() {
 }
 
 func (r *Routine) worker() {
-	defer r.workerWg.Done()
+	var stopped = false
+	defer func() {
+		if !stopped {
+			r.stopWorker()
+		}
+		r.workerWg.Done()
+	}()
 
-	for fn := range r.tasks {
-		r.run(fn)
+	var timer = time.NewTimer(r.idleTimeout)
+	defer timer.Stop()
+
+	for {
+		select {
+		case fn, ok := <-r.tasks:
+			if !ok {
+				return
+			}
+			if !timer.Stop() {
+				select {
+				case <-timer.C:
+				default:
+				}
+			}
+			r.run(fn)
+			timer.Reset(r.idleTimeout)
+		case <-timer.C:
+			select {
+			case fn, ok := <-r.tasks:
+				if !ok {
+					return
+				}
+				r.run(fn)
+				timer.Reset(r.idleTimeout)
+			default:
+				r.mu.Lock()
+				if r.submitters > 0 {
+					r.mu.Unlock()
+					timer.Reset(r.idleTimeout)
+					continue
+				}
+				r.workers--
+				stopped = true
+				r.mu.Unlock()
+				return
+			}
+		}
 	}
+}
+
+func (r *Routine) stopWorker() {
+	r.mu.Lock()
+	r.workers--
+	r.mu.Unlock()
 }
 
 func (r *Routine) run(fn func()) {
