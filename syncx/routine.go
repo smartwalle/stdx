@@ -54,7 +54,7 @@ func NewRoutine(workerSize int, queueSize int) *Routine {
 	return routine
 }
 
-func (r *Routine) Submit(ctx context.Context, fn func()) error {
+func (r *Routine) Go(ctx context.Context, fn func()) error {
 	if fn == nil {
 		return ErrRoutineBadTask
 	}
@@ -76,7 +76,7 @@ func (r *Routine) Submit(ctx context.Context, fn func()) error {
 	}
 }
 
-func (r *Routine) TrySubmit(fn func()) error {
+func (r *Routine) TryGo(fn func()) error {
 	if fn == nil {
 		return ErrRoutineBadTask
 	}
