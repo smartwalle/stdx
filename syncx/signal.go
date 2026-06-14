@@ -24,6 +24,9 @@ func NewSignal[T any]() *Signal[T] {
 }
 
 func (s *Signal[T]) Notify(ctx context.Context, payload T) error {
+	if ctx == nil {
+		ctx = context.Background()
+	}
 	s.mu.RLock()
 	defer s.mu.RUnlock()
 
@@ -49,6 +52,9 @@ func (s *Signal[T]) Notify(ctx context.Context, payload T) error {
 }
 
 func (s *Signal[T]) Listen(bufferSize int) (message <-chan T, cancel func()) {
+	if bufferSize < 0 {
+		bufferSize = 0
+	}
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
