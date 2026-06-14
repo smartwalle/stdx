@@ -3,6 +3,7 @@ package syncx
 import (
 	"context"
 	"sync"
+	"sync/atomic"
 )
 
 type Group struct {
@@ -15,9 +16,14 @@ type Group struct {
 
 	errOnce sync.Once
 	err     error
+
+	panicHandler atomic.Value
 }
 
 func NewGroup(ctx context.Context) *Group {
+	if ctx == nil {
+		ctx = context.Background()
+	}
 	ctx, cancel := context.WithCancelCause(ctx)
 	return &Group{ctx: ctx, cancel: cancel}
 }
@@ -31,10 +37,34 @@ func (g *Group) Wait() error {
 }
 
 func (g *Group) done() {
+	defer g.wg.Done()
+
+	if x := recover(); x != nil {
+		g.handlePanic(x)
+	}
+
 	if g.sem != nil {
 		<-g.sem
 	}
-	g.wg.Done()
+}
+
+func (g *Group) HandlePanic(handler PanicHandler) {
+	if handler == nil {
+		return
+	}
+	g.panicHandler.Store(handler)
+}
+
+func (g *Group) handlePanic(x any) {
+	var handler = g.panicHandler.Load()
+	if handler == nil {
+		return
+	}
+
+	defer func() {
+		_ = recover()
+	}()
+	handler.(PanicHandler)(x)
 }
 
 func (g *Group) Go(fn func(context.Context) error) {
@@ -54,12 +84,7 @@ func (g *Group) Go(fn func(context.Context) error) {
 
 	g.wg.Add(1)
 	go func() {
-		defer func() {
-			if x := recover(); x != nil {
-				panic(x)
-			}
-			g.done()
-		}()
+		defer g.done()
 		if err := fn(g.ctx); err != nil {
 			g.errOnce.Do(func() {
 				g.err = err
@@ -88,14 +113,11 @@ func (g *Group) Run(fn func(ctx context.Context) error) {
 
 	g.wg.Add(1)
 	go func() {
-		defer func() {
-			if x := recover(); x != nil {
-				panic(x)
-			}
-			g.done()
-		}()
+		defer g.done()
 		if err := fn(g.ctx); err != nil {
-			g.err = err
+			g.errOnce.Do(func() {
+				g.err = err
+			})
 		}
 	}()
 }
@@ -119,12 +141,7 @@ func (g *Group) TryGo(fn func(context.Context) error) bool {
 
 	g.wg.Add(1)
 	go func() {
-		defer func() {
-			if x := recover(); x != nil {
-				panic(x)
-			}
-			g.done()
-		}()
+		defer g.done()
 		if err := fn(g.ctx); err != nil {
 			g.errOnce.Do(func() {
 				g.err = err
