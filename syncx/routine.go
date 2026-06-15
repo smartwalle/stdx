@@ -109,7 +109,7 @@ func (r *Routine) Close() {
 	})
 }
 
-func (r *Routine) HandlePanic(handler PanicHandler) {
+func (r *Routine) OnPanic(handler PanicHandler) {
 	if handler == nil {
 		return
 	}

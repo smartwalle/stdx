@@ -56,7 +56,7 @@ func (g *Group) done() {
 	}
 }
 
-func (g *Group) HandlePanic(handler PanicHandler) {
+func (g *Group) OnPanic(handler PanicHandler) {
 	if handler == nil {
 		return
 	}
