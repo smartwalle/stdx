@@ -28,6 +28,14 @@ func NewGroup(ctx context.Context) *Group {
 	return &Group{ctx: ctx, cancel: cancel}
 }
 
+func NewLimitGroup(ctx context.Context, limit int) *Group {
+	var group = NewGroup(ctx)
+	if limit > 0 {
+		group.sem = make(chan struct{}, limit)
+	}
+	return group
+}
+
 func (g *Group) Wait() error {
 	g.wg.Wait()
 	if g.cancel != nil {
@@ -151,13 +159,5 @@ func (g *Group) TryGo(fn func(context.Context) error) bool {
 			})
 		}
 	}()
-	return true
-}
-
-func (g *Group) Limit(n int) bool {
-	if n < 1 || g.sem != nil {
-		return false
-	}
-	g.sem = make(chan struct{}, n)
 	return true
 }
