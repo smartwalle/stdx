@@ -14,10 +14,10 @@ func Filter[T any](slice []T, fn func(elem T) bool) []T {
 	return ns
 }
 
-// OptimizedFilter 筛选出 slice 中满足指定条件的元素，返回的新 slice 与原始 slice 共享底层数组
+// Retain 保留 slice 中满足指定条件的元素，返回结果与原始 slice 共享底层数组
 //
-//	特别注意：本函数仅适用于过滤之后不再需要原始 slice 的场景。
-func OptimizedFilter[T any](slice []T, fn func(elem T) bool) []T {
+//	特别注意：本函数会修改原始 slice，仅适用于过滤之后不再需要原始 slice 内容的场景。
+func Retain[T any](slice []T, fn func(elem T) bool) []T {
 	if len(slice) == 0 {
 		return nil
 	}
