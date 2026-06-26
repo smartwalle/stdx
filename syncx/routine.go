@@ -21,6 +21,7 @@ type Routine struct {
 	cond       *sync.Cond
 	workers    int
 	submitters int
+	pending    int
 
 	closed    chan struct{}
 	closeOnce sync.Once
@@ -70,8 +71,10 @@ func (r *Routine) Go(ctx context.Context, fn func()) error {
 	case r.tasks <- fn:
 		return nil
 	case <-ctx.Done():
+		r.doneTask()
 		return ctx.Err()
 	case <-r.closed:
+		r.doneTask()
 		return ErrRoutineClosed
 	}
 }
@@ -89,8 +92,10 @@ func (r *Routine) TryGo(fn func()) error {
 	case r.tasks <- fn:
 		return nil
 	case <-r.closed:
+		r.doneTask()
 		return ErrRoutineClosed
 	default:
+		r.doneTask()
 		return ErrRoutineQueueFull
 	}
 }
@@ -107,6 +112,15 @@ func (r *Routine) Close() {
 
 		r.workerWg.Wait()
 	})
+}
+
+func (r *Routine) Wait() {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+
+	for r.pending > 0 {
+		r.cond.Wait()
+	}
 }
 
 func (r *Routine) OnPanic(handler PanicHandler) {
@@ -135,6 +149,7 @@ func (r *Routine) beginSubmit() bool {
 	default:
 	}
 	r.submitters++
+	r.pending++
 
 	if r.workers < r.workerSize {
 		r.workers++
@@ -149,6 +164,15 @@ func (r *Routine) endSubmit() {
 	r.mu.Lock()
 	r.submitters--
 	if r.submitters == 0 {
+		r.cond.Broadcast()
+	}
+	r.mu.Unlock()
+}
+
+func (r *Routine) doneTask() {
+	r.mu.Lock()
+	r.pending--
+	if r.pending == 0 {
 		r.cond.Broadcast()
 	}
 	r.mu.Unlock()
@@ -215,6 +239,7 @@ func (r *Routine) run(fn func()) {
 		if x := recover(); x != nil {
 			r.handlePanic(x)
 		}
+		r.doneTask()
 	}()
 	fn()
 }
