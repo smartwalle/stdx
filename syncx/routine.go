@@ -28,7 +28,7 @@ type Routine struct {
 
 	workerWg sync.WaitGroup
 
-	workerSize  int
+	maxWorkers  int
 	idleTimeout time.Duration
 
 	panicHandler atomic.Value
@@ -36,18 +36,18 @@ type Routine struct {
 
 type PanicHandler func(any)
 
-func NewRoutine(workerSize int, queueSize int) *Routine {
-	if workerSize < 1 {
-		workerSize = 1
+func NewRoutine(maxWorkers int, queueCapacity int) *Routine {
+	if maxWorkers < 1 {
+		maxWorkers = 1
 	}
-	if queueSize < 0 {
-		queueSize = 0
+	if queueCapacity < 0 {
+		queueCapacity = 0
 	}
 
 	var routine = &Routine{
-		tasks:       make(chan func(), queueSize),
+		tasks:       make(chan func(), queueCapacity),
 		closed:      make(chan struct{}),
-		workerSize:  workerSize,
+		maxWorkers:  maxWorkers,
 		idleTimeout: time.Second,
 	}
 	routine.cond = sync.NewCond(&routine.mu)
@@ -151,7 +151,7 @@ func (r *Routine) beginSubmit() bool {
 	r.submitters++
 	r.pending++
 
-	if r.workers < r.workerSize {
+	if r.workers < r.maxWorkers {
 		r.workers++
 		r.workerWg.Add(1)
 		go r.worker()
