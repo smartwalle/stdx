@@ -3,7 +3,6 @@ package syncx
 import (
 	"context"
 	"sync"
-	"sync/atomic"
 )
 
 type Group struct {
@@ -12,67 +11,47 @@ type Group struct {
 
 	wg sync.WaitGroup
 
-	sem chan struct{}
+	routine *Routine
 
 	errOnce sync.Once
 	err     error
-
-	panicHandler atomic.Value
 }
 
-func NewGroup(ctx context.Context) *Group {
+func NewGroup(ctx context.Context, maxConcurrency int, queueCapacity int) *Group {
 	if ctx == nil {
 		ctx = context.Background()
 	}
 	ctx, cancel := context.WithCancelCause(ctx)
-	return &Group{ctx: ctx, cancel: cancel}
-}
-
-func NewLimitGroup(ctx context.Context, limit int) *Group {
-	var group = NewGroup(ctx)
-	if limit > 0 {
-		group.sem = make(chan struct{}, limit)
+	if maxConcurrency < 1 {
+		maxConcurrency = 1
 	}
-	return group
+	if queueCapacity < 0 {
+		queueCapacity = 0
+	}
+	return &Group{
+		ctx:     ctx,
+		cancel:  cancel,
+		routine: NewRoutine(maxConcurrency, queueCapacity),
+	}
 }
 
 func (g *Group) Wait() error {
 	g.wg.Wait()
+	if g.routine != nil {
+		g.routine.Close()
+	}
+	cause := context.Cause(g.ctx)
 	if g.cancel != nil {
 		g.cancel(g.err)
 	}
-	return g.err
-}
-
-func (g *Group) done() {
-	defer g.wg.Done()
-
-	if x := recover(); x != nil {
-		g.handlePanic(x)
+	if g.err != nil {
+		return g.err
 	}
-
-	if g.sem != nil {
-		<-g.sem
-	}
+	return cause
 }
 
 func (g *Group) OnPanic(handler PanicHandler) {
-	if handler == nil {
-		return
-	}
-	g.panicHandler.Store(handler)
-}
-
-func (g *Group) handlePanic(x any) {
-	var handler = g.panicHandler.Load()
-	if handler == nil {
-		return
-	}
-
-	defer func() {
-		_ = recover()
-	}()
-	handler.(PanicHandler)(x)
+	g.routine.OnPanic(handler)
 }
 
 func (g *Group) Go(fn func(context.Context) error) {
@@ -82,26 +61,10 @@ func (g *Group) Go(fn func(context.Context) error) {
 	default:
 	}
 
-	if g.sem != nil {
-		select {
-		case <-g.ctx.Done():
-			return
-		case g.sem <- struct{}{}:
-		}
-	}
-
 	g.wg.Add(1)
-	go func() {
-		defer g.done()
-		if err := fn(g.ctx); err != nil {
-			g.errOnce.Do(func() {
-				g.err = err
-				if g.cancel != nil {
-					g.cancel(g.err)
-				}
-			})
-		}
-	}()
+	if g.routine.Go(g.ctx, g.makeTask(fn, true)) != nil {
+		g.wg.Done()
+	}
 }
 
 func (g *Group) Run(fn func(ctx context.Context) error) {
@@ -111,23 +74,10 @@ func (g *Group) Run(fn func(ctx context.Context) error) {
 	default:
 	}
 
-	if g.sem != nil {
-		select {
-		case <-g.ctx.Done():
-			return
-		case g.sem <- struct{}{}:
-		}
-	}
-
 	g.wg.Add(1)
-	go func() {
-		defer g.done()
-		if err := fn(g.ctx); err != nil {
-			g.errOnce.Do(func() {
-				g.err = err
-			})
-		}
-	}()
+	if g.routine.Go(g.ctx, g.makeTask(fn, false)) != nil {
+		g.wg.Done()
+	}
 }
 
 func (g *Group) TryGo(fn func(context.Context) error) bool {
@@ -137,27 +87,24 @@ func (g *Group) TryGo(fn func(context.Context) error) bool {
 	default:
 	}
 
-	if g.sem != nil {
-		select {
-		case <-g.ctx.Done():
-			return false
-		case g.sem <- struct{}{}:
-		default:
-			return false
-		}
-	}
-
 	g.wg.Add(1)
-	go func() {
-		defer g.done()
+	if g.routine.TryGo(g.makeTask(fn, true)) != nil {
+		g.wg.Done()
+		return false
+	}
+	return true
+}
+
+func (g *Group) makeTask(fn func(context.Context) error, cancelOnError bool) func() {
+	return func() {
+		defer g.wg.Done()
 		if err := fn(g.ctx); err != nil {
 			g.errOnce.Do(func() {
 				g.err = err
-				if g.cancel != nil {
+				if cancelOnError && g.cancel != nil {
 					g.cancel(g.err)
 				}
 			})
 		}
-	}()
-	return true
+	}
 }
