@@ -59,9 +59,6 @@ func (r *Routine) Go(ctx context.Context, fn func()) error {
 	if fn == nil {
 		return ErrRoutineBadTask
 	}
-	if ctx == nil {
-		ctx = context.Background()
-	}
 	if !r.beginSubmit() {
 		return ErrRoutineClosed
 	}
