@@ -18,9 +18,6 @@ type Group struct {
 }
 
 func NewGroup(ctx context.Context, maxConcurrency int, queueCapacity int) *Group {
-	if ctx == nil {
-		ctx = context.Background()
-	}
 	ctx, cancel := context.WithCancelCause(ctx)
 	if maxConcurrency < 1 {
 		maxConcurrency = 1
