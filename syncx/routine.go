@@ -76,7 +76,7 @@ func (r *Routine) Go(ctx context.Context, fn func()) error {
 	}
 }
 
-func (r *Routine) TryGo(fn func()) error {
+func (r *Routine) TryGo(ctx context.Context, fn func()) error {
 	if fn == nil {
 		return ErrRoutineBadTask
 	}
@@ -86,8 +86,18 @@ func (r *Routine) TryGo(fn func()) error {
 	defer r.endSubmit()
 
 	select {
+	case <-ctx.Done():
+		r.doneTask()
+		return ctx.Err()
+	default:
+	}
+
+	select {
 	case r.tasks <- fn:
 		return nil
+	case <-ctx.Done():
+		r.doneTask()
+		return ctx.Err()
 	case <-r.closed:
 		r.doneTask()
 		return ErrRoutineClosed

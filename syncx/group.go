@@ -88,7 +88,7 @@ func (g *Group) TryGo(fn func(context.Context) error) bool {
 	}
 
 	g.wg.Add(1)
-	if g.routine.TryGo(g.makeTask(fn, true)) != nil {
+	if g.routine.TryGo(g.ctx, g.makeTask(fn, true)) != nil {
 		g.wg.Done()
 		return false
 	}
