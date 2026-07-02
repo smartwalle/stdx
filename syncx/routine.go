@@ -252,7 +252,7 @@ func (r *Routine) run(fn func()) {
 }
 
 func (r *Routine) handlePanic(x any) {
-	var handler = r.panicHandler.Load()
+	var handler, _ = r.panicHandler.Load().(PanicHandler)
 	if handler == nil {
 		return
 	}
@@ -260,5 +260,5 @@ func (r *Routine) handlePanic(x any) {
 	defer func() {
 		_ = recover()
 	}()
-	handler.(PanicHandler)(x)
+	handler(x)
 }
