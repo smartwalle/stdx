@@ -37,44 +37,44 @@ func (c Calendar) UseWeekStart(weekStart time.Weekday) Calendar {
 }
 
 // BeginningOfMinuteAt 获取指定时间在当前日历时区所在分钟的开始时间
-func (c Calendar) BeginningOfMinuteAt(t time.Time) time.Time {
-	t = t.In(c.Location())
-	year, month, day := t.Date()
-	hour, minute, _ := t.Clock()
+func (c Calendar) BeginningOfMinuteAt(t UTCTime) time.Time {
+	tm := t.UTC().In(c.Location())
+	year, month, day := tm.Date()
+	hour, minute, _ := tm.Clock()
 	return time.Date(year, month, day, hour, minute, 0, 0, c.Location())
 }
 
 // EndOfMinuteAt 获取指定时间在当前日历时区所在分钟的结束时间
-func (c Calendar) EndOfMinuteAt(t time.Time) time.Time {
-	t = t.In(c.Location())
-	year, month, day := t.Date()
-	hour, minute, _ := t.Clock()
+func (c Calendar) EndOfMinuteAt(t UTCTime) time.Time {
+	tm := t.UTC().In(c.Location())
+	year, month, day := tm.Date()
+	hour, minute, _ := tm.Clock()
 	return time.Date(year, month, day, hour, minute, 59, int(time.Second-time.Nanosecond), c.Location())
 }
 
 // MinuteRangeAt 获取指定时间在当前日历时区所在分钟的开始时间和结束时间
-func (c Calendar) MinuteRangeAt(t time.Time) (start, end time.Time) {
+func (c Calendar) MinuteRangeAt(t UTCTime) (start, end time.Time) {
 	return c.BeginningOfMinuteAt(t), c.EndOfMinuteAt(t)
 }
 
 // BeginningOfHourAt 获取指定时间在当前日历时区所在小时的开始时间
-func (c Calendar) BeginningOfHourAt(t time.Time) time.Time {
-	t = t.In(c.Location())
-	year, month, day := t.Date()
-	hour, _, _ := t.Clock()
+func (c Calendar) BeginningOfHourAt(t UTCTime) time.Time {
+	tm := t.UTC().In(c.Location())
+	year, month, day := tm.Date()
+	hour, _, _ := tm.Clock()
 	return time.Date(year, month, day, hour, 0, 0, 0, c.Location())
 }
 
 // EndOfHourAt 获取指定时间在当前日历时区所在小时的结束时间
-func (c Calendar) EndOfHourAt(t time.Time) time.Time {
-	t = t.In(c.Location())
-	year, month, day := t.Date()
-	hour, _, _ := t.Clock()
+func (c Calendar) EndOfHourAt(t UTCTime) time.Time {
+	tm := t.UTC().In(c.Location())
+	year, month, day := tm.Date()
+	hour, _, _ := tm.Clock()
 	return time.Date(year, month, day, hour, 59, 59, int(time.Second-time.Nanosecond), c.Location())
 }
 
 // HourRangeAt 获取指定时间在当前日历时区所在小时的开始时间和结束时间
-func (c Calendar) HourRangeAt(t time.Time) (start, end time.Time) {
+func (c Calendar) HourRangeAt(t UTCTime) (start, end time.Time) {
 	return c.BeginningOfHourAt(t), c.EndOfHourAt(t)
 }
 
@@ -94,19 +94,19 @@ func (c Calendar) DayRange(year int, month time.Month, day int) (start, end time
 }
 
 // BeginningOfDayAt 获取指定时间在当前日历时区所在日期的开始时间
-func (c Calendar) BeginningOfDayAt(t time.Time) time.Time {
-	t = t.In(c.Location())
-	return c.BeginningOfDay(t.Date())
+func (c Calendar) BeginningOfDayAt(t UTCTime) time.Time {
+	tm := t.UTC().In(c.Location())
+	return c.BeginningOfDay(tm.Date())
 }
 
 // EndOfDayAt 获取指定时间在当前日历时区所在日期的结束时间
-func (c Calendar) EndOfDayAt(t time.Time) time.Time {
-	t = t.In(c.Location())
-	return c.EndOfDay(t.Date())
+func (c Calendar) EndOfDayAt(t UTCTime) time.Time {
+	tm := t.UTC().In(c.Location())
+	return c.EndOfDay(tm.Date())
 }
 
 // DayRangeAt 获取指定时间在当前日历时区所在日期的开始时间和结束时间
-func (c Calendar) DayRangeAt(t time.Time) (start, end time.Time) {
+func (c Calendar) DayRangeAt(t UTCTime) (start, end time.Time) {
 	return c.BeginningOfDayAt(t), c.EndOfDayAt(t)
 }
 
@@ -132,19 +132,19 @@ func (c Calendar) WeekRange(year int, month time.Month, day int) (start, end tim
 }
 
 // BeginningOfWeekAt 获取指定时间在当前日历时区所在周的开始时间
-func (c Calendar) BeginningOfWeekAt(t time.Time) time.Time {
-	t = t.In(c.Location())
-	return c.BeginningOfWeek(t.Date())
+func (c Calendar) BeginningOfWeekAt(t UTCTime) time.Time {
+	tm := t.UTC().In(c.Location())
+	return c.BeginningOfWeek(tm.Date())
 }
 
 // EndOfWeekAt 获取指定时间在当前日历时区所在周的结束时间
-func (c Calendar) EndOfWeekAt(t time.Time) time.Time {
-	t = t.In(c.Location())
-	return c.EndOfWeek(t.Date())
+func (c Calendar) EndOfWeekAt(t UTCTime) time.Time {
+	tm := t.UTC().In(c.Location())
+	return c.EndOfWeek(tm.Date())
 }
 
 // WeekRangeAt 获取指定时间在当前日历时区所在周的开始时间和结束时间
-func (c Calendar) WeekRangeAt(t time.Time) (start, end time.Time) {
+func (c Calendar) WeekRangeAt(t UTCTime) (start, end time.Time) {
 	return c.BeginningOfWeekAt(t), c.EndOfWeekAt(t)
 }
 
@@ -164,19 +164,19 @@ func (c Calendar) MonthRange(year int, month time.Month) (start, end time.Time) 
 }
 
 // BeginningOfMonthAt 获取指定时间在当前日历时区所在月份的开始时间
-func (c Calendar) BeginningOfMonthAt(t time.Time) time.Time {
-	t = t.In(c.Location())
-	return c.BeginningOfMonth(t.Year(), t.Month())
+func (c Calendar) BeginningOfMonthAt(t UTCTime) time.Time {
+	tm := t.UTC().In(c.Location())
+	return c.BeginningOfMonth(tm.Year(), tm.Month())
 }
 
 // EndOfMonthAt 获取指定时间在当前日历时区所在月份的结束时间
-func (c Calendar) EndOfMonthAt(t time.Time) time.Time {
-	t = t.In(c.Location())
-	return c.EndOfMonth(t.Year(), t.Month())
+func (c Calendar) EndOfMonthAt(t UTCTime) time.Time {
+	tm := t.UTC().In(c.Location())
+	return c.EndOfMonth(tm.Year(), tm.Month())
 }
 
 // MonthRangeAt 获取指定时间在当前日历时区所在月份的开始时间和结束时间
-func (c Calendar) MonthRangeAt(t time.Time) (start, end time.Time) {
+func (c Calendar) MonthRangeAt(t UTCTime) (start, end time.Time) {
 	return c.BeginningOfMonthAt(t), c.EndOfMonthAt(t)
 }
 
@@ -198,19 +198,19 @@ func (c Calendar) QuarterRange(year int, quarter int) (start, end time.Time) {
 }
 
 // BeginningOfQuarterAt 获取指定时间在当前日历时区所在季度的开始时间
-func (c Calendar) BeginningOfQuarterAt(t time.Time) time.Time {
-	t = t.In(c.Location())
-	return c.BeginningOfQuarter(t.Year(), Quarter(t.Month()))
+func (c Calendar) BeginningOfQuarterAt(t UTCTime) time.Time {
+	tm := t.UTC().In(c.Location())
+	return c.BeginningOfQuarter(tm.Year(), Quarter(tm.Month()))
 }
 
 // EndOfQuarterAt 获取指定时间在当前日历时区所在季度的结束时间
-func (c Calendar) EndOfQuarterAt(t time.Time) time.Time {
-	t = t.In(c.Location())
-	return c.EndOfQuarter(t.Year(), Quarter(t.Month()))
+func (c Calendar) EndOfQuarterAt(t UTCTime) time.Time {
+	tm := t.UTC().In(c.Location())
+	return c.EndOfQuarter(tm.Year(), Quarter(tm.Month()))
 }
 
 // QuarterRangeAt 获取指定时间在当前日历时区所在季度的开始时间和结束时间
-func (c Calendar) QuarterRangeAt(t time.Time) (start, end time.Time) {
+func (c Calendar) QuarterRangeAt(t UTCTime) (start, end time.Time) {
 	return c.BeginningOfQuarterAt(t), c.EndOfQuarterAt(t)
 }
 
@@ -230,19 +230,19 @@ func (c Calendar) YearRange(year int) (start, end time.Time) {
 }
 
 // BeginningOfYearAt 获取指定时间在当前日历时区所在年份的开始时间
-func (c Calendar) BeginningOfYearAt(t time.Time) time.Time {
-	t = t.In(c.Location())
-	return c.BeginningOfYear(t.Year())
+func (c Calendar) BeginningOfYearAt(t UTCTime) time.Time {
+	tm := t.UTC().In(c.Location())
+	return c.BeginningOfYear(tm.Year())
 }
 
 // EndOfYearAt 获取指定时间在当前日历时区所在年份的结束时间
-func (c Calendar) EndOfYearAt(t time.Time) time.Time {
-	t = t.In(c.Location())
-	return c.EndOfYear(t.Year())
+func (c Calendar) EndOfYearAt(t UTCTime) time.Time {
+	tm := t.UTC().In(c.Location())
+	return c.EndOfYear(tm.Year())
 }
 
 // YearRangeAt 获取指定时间在当前日历时区所在年份的开始时间和结束时间
-func (c Calendar) YearRangeAt(t time.Time) (start, end time.Time) {
+func (c Calendar) YearRangeAt(t UTCTime) (start, end time.Time) {
 	return c.BeginningOfYearAt(t), c.EndOfYearAt(t)
 }
 
