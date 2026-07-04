@@ -36,6 +36,48 @@ func (c Calendar) UseWeekStart(weekStart time.Weekday) Calendar {
 	return c
 }
 
+// BeginningOfMinuteAt 获取指定时间在当前日历时区所在分钟的开始时间
+func (c Calendar) BeginningOfMinuteAt(t time.Time) time.Time {
+	t = t.In(c.Location())
+	year, month, day := t.Date()
+	hour, minute, _ := t.Clock()
+	return time.Date(year, month, day, hour, minute, 0, 0, c.Location())
+}
+
+// EndOfMinuteAt 获取指定时间在当前日历时区所在分钟的结束时间
+func (c Calendar) EndOfMinuteAt(t time.Time) time.Time {
+	t = t.In(c.Location())
+	year, month, day := t.Date()
+	hour, minute, _ := t.Clock()
+	return time.Date(year, month, day, hour, minute, 59, int(time.Second-time.Nanosecond), c.Location())
+}
+
+// MinuteRangeAt 获取指定时间在当前日历时区所在分钟的开始时间和结束时间
+func (c Calendar) MinuteRangeAt(t time.Time) (start, end time.Time) {
+	return c.BeginningOfMinuteAt(t), c.EndOfMinuteAt(t)
+}
+
+// BeginningOfHourAt 获取指定时间在当前日历时区所在小时的开始时间
+func (c Calendar) BeginningOfHourAt(t time.Time) time.Time {
+	t = t.In(c.Location())
+	year, month, day := t.Date()
+	hour, _, _ := t.Clock()
+	return time.Date(year, month, day, hour, 0, 0, 0, c.Location())
+}
+
+// EndOfHourAt 获取指定时间在当前日历时区所在小时的结束时间
+func (c Calendar) EndOfHourAt(t time.Time) time.Time {
+	t = t.In(c.Location())
+	year, month, day := t.Date()
+	hour, _, _ := t.Clock()
+	return time.Date(year, month, day, hour, 59, 59, int(time.Second-time.Nanosecond), c.Location())
+}
+
+// HourRangeAt 获取指定时间在当前日历时区所在小时的开始时间和结束时间
+func (c Calendar) HourRangeAt(t time.Time) (start, end time.Time) {
+	return c.BeginningOfHourAt(t), c.EndOfHourAt(t)
+}
+
 // BeginningOfDay 获取当前日历时区指定日期的开始时间
 func (c Calendar) BeginningOfDay(year int, month time.Month, day int) time.Time {
 	return time.Date(year, month, day, 0, 0, 0, 0, c.Location())

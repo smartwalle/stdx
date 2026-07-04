@@ -177,6 +177,14 @@ func (t Time[T]) Location() *time.Location {
 	return zone.Location()
 }
 
+func (t Time[T]) calendar() Calendar {
+	return NewCalendar(t.Location())
+}
+
+func (t Time[T]) fromTime(v time.Time) Time[T] {
+	return Time[T]{utc: v.UTC()}
+}
+
 func (t Time[T]) Zone() (name string, offset int) {
 	return t.Time().Zone()
 }
@@ -325,78 +333,72 @@ func (t Time[T]) Next() Time[T] {
 
 // BeginningOfMinute 获取当前分钟的开始时间
 func (t Time[T]) BeginningOfMinute() Time[T] {
-	return Date[T](t.Year(), t.Month(), t.Day(), t.Hour(), t.Minute(), 0, 0)
+	return t.fromTime(t.calendar().BeginningOfMinuteAt(t.Time()))
 }
 
 // EndOfMinute 获取当前分钟的结束时间
 func (t Time[T]) EndOfMinute() Time[T] {
-	return Date[T](t.Year(), t.Month(), t.Day(), t.Hour(), t.Minute(), 59, int(time.Second-time.Nanosecond))
+	return t.fromTime(t.calendar().EndOfMinuteAt(t.Time()))
 }
 
 // BeginningOfHour 获取当前小时的开始时间
 func (t Time[T]) BeginningOfHour() Time[T] {
-	return Date[T](t.Year(), t.Month(), t.Day(), t.Hour(), 0, 0, 0)
+	return t.fromTime(t.calendar().BeginningOfHourAt(t.Time()))
 }
 
 // EndOfHour 获取当前小时的结束时间
 func (t Time[T]) EndOfHour() Time[T] {
-	return Date[T](t.Year(), t.Month(), t.Day(), t.Hour(), 59, 59, int(time.Second-time.Nanosecond))
+	return t.fromTime(t.calendar().EndOfHourAt(t.Time()))
 }
 
 // BeginningOfDay 获取当前天的开始时间
 func (t Time[T]) BeginningOfDay() Time[T] {
-	return Date[T](t.Year(), t.Month(), t.Day(), 0, 0, 0, 0)
+	return t.fromTime(t.calendar().BeginningOfDayAt(t.Time()))
 }
 
 // EndOfDay 获取当前天的结束时间
 func (t Time[T]) EndOfDay() Time[T] {
-	return Date[T](t.Year(), t.Month(), t.Day(), 23, 59, 59, int(time.Second-time.Nanosecond))
+	return t.fromTime(t.calendar().EndOfDayAt(t.Time()))
 }
 
 // BeginningOfWeek 获取当前日期所在周的开始时间
 func (t Time[T]) BeginningOfWeek() Time[T] {
-	var w = t.Weekday()
-	var d = int(w - time.Sunday)
-	return Date[T](t.Year(), t.Month(), t.Day()-d, 0, 0, 0, 0)
+	return t.fromTime(t.calendar().BeginningOfWeekAt(t.Time()))
 }
 
 // EndOfWeek 获取当前日期所在周的结束时间
 func (t Time[T]) EndOfWeek() Time[T] {
-	var w = t.Weekday()
-	var d = int(time.Saturday - w)
-	return Date[T](t.Year(), t.Month(), t.Day()+d, 23, 59, 59, int(time.Second-time.Nanosecond))
+	return t.fromTime(t.calendar().EndOfWeekAt(t.Time()))
 }
 
 // BeginningOfMonth 获取当前日期所在月的开始时间
 func (t Time[T]) BeginningOfMonth() Time[T] {
-	return Date[T](t.Year(), t.Month(), 1, 0, 0, 0, 0)
+	return t.fromTime(t.calendar().BeginningOfMonthAt(t.Time()))
 }
 
 // EndOfMonth 获取当前日期所在月的结束时间
 func (t Time[T]) EndOfMonth() Time[T] {
-	return Date[T](t.Year(), t.Month()+1, 0, 23, 59, 59, int(time.Second-time.Nanosecond))
+	return t.fromTime(t.calendar().EndOfMonthAt(t.Time()))
 }
 
 // BeginningOfQuarter 获取当前日期所在季度的开始时间
 func (t Time[T]) BeginningOfQuarter() Time[T] {
-	var m = int(t.Month()-1)/3*3 + 1
-	return Date[T](t.Year(), time.Month(m), 1, 0, 0, 0, 0)
+	return t.fromTime(t.calendar().BeginningOfQuarterAt(t.Time()))
 }
 
 // EndOfQuarter 获取当前日期所在季度的结束时间
 func (t Time[T]) EndOfQuarter() Time[T] {
-	var m = time.Month(int(t.Month()-1)/3*3 + 3)
-	return Date[T](t.Year(), m+1, 0, 23, 59, 59, int(time.Second-time.Nanosecond))
+	return t.fromTime(t.calendar().EndOfQuarterAt(t.Time()))
 }
 
 // BeginningOfYear 获取当前日期所在年的开始时间
 func (t Time[T]) BeginningOfYear() Time[T] {
-	return Date[T](t.Year(), time.January, 1, 0, 0, 0, 0)
+	return t.fromTime(t.calendar().BeginningOfYearAt(t.Time()))
 }
 
 // EndOfYear 获取当前日期所在年的结束时间
 func (t Time[T]) EndOfYear() Time[T] {
-	return Date[T](t.Year(), time.December+1, 0, 23, 59, 59, int(time.Second-time.Nanosecond))
+	return t.fromTime(t.calendar().EndOfYearAt(t.Time()))
 }
 
 func LeapYear(year int) bool {
