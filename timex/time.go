@@ -333,71 +333,113 @@ func (t Time[T]) Next() Time[T] {
 
 // BeginningOfMinute 获取当前分钟的开始时间
 func (t Time[T]) BeginningOfMinute() Time[T] {
+	if t.IsZero() {
+		return t
+	}
 	return t.fromTime(t.calendar().BeginningOfMinuteAt(t.Time()))
 }
 
 // EndOfMinute 获取当前分钟的结束时间
 func (t Time[T]) EndOfMinute() Time[T] {
+	if t.IsZero() {
+		return t
+	}
 	return t.fromTime(t.calendar().EndOfMinuteAt(t.Time()))
 }
 
 // BeginningOfHour 获取当前小时的开始时间
 func (t Time[T]) BeginningOfHour() Time[T] {
+	if t.IsZero() {
+		return t
+	}
 	return t.fromTime(t.calendar().BeginningOfHourAt(t.Time()))
 }
 
 // EndOfHour 获取当前小时的结束时间
 func (t Time[T]) EndOfHour() Time[T] {
+	if t.IsZero() {
+		return t
+	}
 	return t.fromTime(t.calendar().EndOfHourAt(t.Time()))
 }
 
 // BeginningOfDay 获取当前天的开始时间
 func (t Time[T]) BeginningOfDay() Time[T] {
+	if t.IsZero() {
+		return t
+	}
 	return t.fromTime(t.calendar().BeginningOfDayAt(t.Time()))
 }
 
 // EndOfDay 获取当前天的结束时间
 func (t Time[T]) EndOfDay() Time[T] {
+	if t.IsZero() {
+		return t
+	}
 	return t.fromTime(t.calendar().EndOfDayAt(t.Time()))
 }
 
 // BeginningOfWeek 获取当前日期所在周的开始时间
 func (t Time[T]) BeginningOfWeek() Time[T] {
+	if t.IsZero() {
+		return t
+	}
 	return t.fromTime(t.calendar().BeginningOfWeekAt(t.Time()))
 }
 
 // EndOfWeek 获取当前日期所在周的结束时间
 func (t Time[T]) EndOfWeek() Time[T] {
+	if t.IsZero() {
+		return t
+	}
 	return t.fromTime(t.calendar().EndOfWeekAt(t.Time()))
 }
 
 // BeginningOfMonth 获取当前日期所在月的开始时间
 func (t Time[T]) BeginningOfMonth() Time[T] {
+	if t.IsZero() {
+		return t
+	}
 	return t.fromTime(t.calendar().BeginningOfMonthAt(t.Time()))
 }
 
 // EndOfMonth 获取当前日期所在月的结束时间
 func (t Time[T]) EndOfMonth() Time[T] {
+	if t.IsZero() {
+		return t
+	}
 	return t.fromTime(t.calendar().EndOfMonthAt(t.Time()))
 }
 
 // BeginningOfQuarter 获取当前日期所在季度的开始时间
 func (t Time[T]) BeginningOfQuarter() Time[T] {
+	if t.IsZero() {
+		return t
+	}
 	return t.fromTime(t.calendar().BeginningOfQuarterAt(t.Time()))
 }
 
 // EndOfQuarter 获取当前日期所在季度的结束时间
 func (t Time[T]) EndOfQuarter() Time[T] {
+	if t.IsZero() {
+		return t
+	}
 	return t.fromTime(t.calendar().EndOfQuarterAt(t.Time()))
 }
 
 // BeginningOfYear 获取当前日期所在年的开始时间
 func (t Time[T]) BeginningOfYear() Time[T] {
+	if t.IsZero() {
+		return t
+	}
 	return t.fromTime(t.calendar().BeginningOfYearAt(t.Time()))
 }
 
 // EndOfYear 获取当前日期所在年的结束时间
 func (t Time[T]) EndOfYear() Time[T] {
+	if t.IsZero() {
+		return t
+	}
 	return t.fromTime(t.calendar().EndOfYearAt(t.Time()))
 }
 
