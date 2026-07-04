@@ -3,14 +3,15 @@ package timex
 import "time"
 
 type Calendar struct {
-	loc *time.Location
+	loc       *time.Location
+	weekStart time.Weekday
 }
 
 func NewCalendar(loc *time.Location) Calendar {
 	if loc == nil {
 		loc = time.Local
 	}
-	return Calendar{loc: loc}
+	return Calendar{loc: loc, weekStart: time.Sunday}
 }
 
 func (c Calendar) Location() *time.Location {
@@ -18,6 +19,21 @@ func (c Calendar) Location() *time.Location {
 		return time.Local
 	}
 	return c.loc
+}
+
+func (c Calendar) WeekStart() time.Weekday {
+	if c.weekStart < time.Sunday || c.weekStart > time.Saturday {
+		return time.Sunday
+	}
+	return c.weekStart
+}
+
+func (c Calendar) UseWeekStart(weekStart time.Weekday) Calendar {
+	if weekStart < time.Sunday || weekStart > time.Saturday {
+		weekStart = time.Sunday
+	}
+	c.weekStart = weekStart
+	return c
 }
 
 // BeginningOfDay 获取当前日历时区指定日期的开始时间
@@ -56,7 +72,7 @@ func (c Calendar) DayRangeAt(t time.Time) (start, end time.Time) {
 func (c Calendar) BeginningOfWeek(year int, month time.Month, day int) time.Time {
 	var t = time.Date(year, month, day, 0, 0, 0, 0, c.Location())
 	var w = t.Weekday()
-	var d = int(w - time.Sunday)
+	var d = int((w - c.WeekStart() + 7) % 7)
 	return time.Date(year, month, day-d, 0, 0, 0, 0, c.Location())
 }
 
@@ -64,7 +80,7 @@ func (c Calendar) BeginningOfWeek(year int, month time.Month, day int) time.Time
 func (c Calendar) EndOfWeek(year int, month time.Month, day int) time.Time {
 	var t = time.Date(year, month, day, 0, 0, 0, 0, c.Location())
 	var w = t.Weekday()
-	var d = int(time.Saturday - w)
+	var d = int((c.WeekStart() + 6 - w + 7) % 7)
 	return time.Date(year, month, day+d, 23, 59, 59, int(time.Second-time.Nanosecond), c.Location())
 }
 
