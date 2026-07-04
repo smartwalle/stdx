@@ -1,3 +1,6 @@
+// Package cst 提供中国标准时间相关工具。
+//
+// 当运行环境存在 IANA 时区数据时使用 Asia/Shanghai；否则退回到固定 UTC+8 时区。
 package cst
 
 import (
@@ -6,7 +9,15 @@ import (
 	"github.com/smartwalle/stdx/timex"
 )
 
-var location = timex.MustLoadLocation("Asia/Shanghai")
+var location = loadLocation()
+
+func loadLocation() *time.Location {
+	loc, err := time.LoadLocation("Asia/Shanghai")
+	if err != nil {
+		loc = time.FixedZone("Asia/Shanghai", 8*60*60)
+	}
+	return loc
+}
 
 func Location() *time.Location {
 	return location

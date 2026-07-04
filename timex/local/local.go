@@ -14,7 +14,7 @@ type Timezone struct {
 }
 
 func (Timezone) Location() *time.Location {
-	return time.Local
+	return Location()
 }
 
 type Time = timex.Time[Timezone]
