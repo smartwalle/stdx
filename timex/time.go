@@ -15,7 +15,7 @@ type Time[T Timezone] struct {
 }
 
 func Now[T Timezone]() Time[T] {
-	return Time[T]{utc: time.Now()}
+	return Time[T]{utc: time.Now().UTC()}
 }
 
 func Date[T Timezone](year int, month time.Month, day, hour, min, sec, nsec int) Time[T] {
@@ -38,11 +38,11 @@ func Unix[T Timezone](sec int64, nsec int64) Time[T] {
 }
 
 func UnixMicro[T Timezone](usec int64) Time[T] {
-	return Time[T]{utc: time.UnixMicro(usec)}
+	return Time[T]{utc: time.UnixMicro(usec).UTC()}
 }
 
 func UnixMilli[T Timezone](msec int64) Time[T] {
-	return Time[T]{utc: time.UnixMilli(msec)}
+	return Time[T]{utc: time.UnixMilli(msec).UTC()}
 }
 
 func FromTime[T Timezone](t UTCTime) Time[T] {
@@ -70,11 +70,13 @@ func (t Time[T]) Equal(u UTCTime) bool {
 }
 
 func (t Time[T]) InRange(u1 UTCTime, u2 UTCTime) bool {
-	if u1.UTC().After(u2.UTC()) {
-		u1, u2 = u2, u1
+	var start = u1.UTC()
+	var end = u2.UTC()
+	if start.After(end) {
+		start, end = end, start
 	}
-	var unix = t.Unix()
-	return unix >= u1.UTC().Unix() && unix <= u2.UTC().Unix()
+	var current = t.UTC()
+	return !current.Before(start) && !current.After(end)
 }
 
 func (t Time[T]) Date() (year int, month time.Month, day int) {
@@ -142,7 +144,7 @@ func (t Time[T]) Sub(u UTCTime) time.Duration {
 }
 
 func (t Time[T]) AddDate(years int, months int, days int) Time[T] {
-	return Time[T]{utc: t.utc.AddDate(years, months, days)}
+	return Time[T]{utc: t.Time().AddDate(years, months, days).UTC()}
 }
 
 func (t Time[T]) UTC() time.Time {
@@ -150,14 +152,23 @@ func (t Time[T]) UTC() time.Time {
 }
 
 func (t Time[T]) Time() time.Time {
+	if t.utc.IsZero() {
+		return t.utc
+	}
 	return t.utc.In(t.Location())
 }
 
 func (t Time[T]) Local() time.Time {
+	if t.utc.IsZero() {
+		return t.utc
+	}
 	return t.utc.Local()
 }
 
 func (t Time[T]) In(loc *time.Location) time.Time {
+	if t.utc.IsZero() {
+		return t.utc
+	}
 	return t.utc.In(loc)
 }
 
@@ -195,7 +206,11 @@ func (t Time[T]) MarshalBinary() ([]byte, error) {
 }
 
 func (t *Time[T]) UnmarshalBinary(data []byte) error {
-	return t.utc.UnmarshalBinary(data)
+	if err := t.utc.UnmarshalBinary(data); err != nil {
+		return err
+	}
+	t.utc = t.utc.UTC()
+	return nil
 }
 
 func (t Time[T]) GobEncode() ([]byte, error) {
@@ -203,7 +218,11 @@ func (t Time[T]) GobEncode() ([]byte, error) {
 }
 
 func (t *Time[T]) GobDecode(data []byte) error {
-	return t.utc.GobDecode(data)
+	if err := t.utc.GobDecode(data); err != nil {
+		return err
+	}
+	t.utc = t.utc.UTC()
+	return nil
 }
 
 func (t Time[T]) MarshalJSON() ([]byte, error) {
@@ -211,7 +230,11 @@ func (t Time[T]) MarshalJSON() ([]byte, error) {
 }
 
 func (t *Time[T]) UnmarshalJSON(data []byte) error {
-	return t.utc.UnmarshalJSON(data)
+	if err := t.utc.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	t.utc = t.utc.UTC()
+	return nil
 }
 
 func (t Time[T]) MarshalText() ([]byte, error) {
@@ -219,7 +242,11 @@ func (t Time[T]) MarshalText() ([]byte, error) {
 }
 
 func (t *Time[T]) UnmarshalText(data []byte) error {
-	return t.utc.UnmarshalText(data)
+	if err := t.utc.UnmarshalText(data); err != nil {
+		return err
+	}
+	t.utc = t.utc.UTC()
+	return nil
 }
 
 func (t Time[T]) IsDST() bool {
@@ -254,20 +281,32 @@ func (t Time[T]) Value() (driver.Value, error) {
 }
 
 func (t *Time[T]) Scan(value interface{}) (err error) {
+	if t == nil {
+		return fmt.Errorf("timex: scan on nil Time")
+	}
 	switch val := value.(type) {
 	case time.Time:
 		t.utc = val.UTC()
 		return nil
 	case *time.Time:
+		if val == nil {
+			t.utc = time.Time{}
+			return nil
+		}
 		t.utc = (*val).UTC()
 		return nil
 	case Time[T]:
-		t.utc = val.utc
+		t.utc = val.UTC()
 		return nil
 	case *Time[T]:
-		t.utc = val.utc
+		if val == nil {
+			t.utc = time.Time{}
+			return nil
+		}
+		t.utc = val.UTC()
 		return nil
 	case nil:
+		t.utc = time.Time{}
 		return nil
 	default:
 		return fmt.Errorf("timex: scanning unsupported type: %T", value)
@@ -276,12 +315,12 @@ func (t *Time[T]) Scan(value interface{}) (err error) {
 
 // Previous 获取当前日期的前一天（昨天）
 func (t Time[T]) Previous() Time[T] {
-	return Time[T]{utc: t.utc.Add(time.Hour * -24)}
+	return t.AddDate(0, 0, -1)
 }
 
 // Next 获取当前日期的后一天（明天）
 func (t Time[T]) Next() Time[T] {
-	return Time[T]{utc: t.utc.Add(time.Hour * 24)}
+	return t.AddDate(0, 0, 1)
 }
 
 // BeginningOfMinute 获取当前分钟的开始时间
@@ -379,17 +418,17 @@ func DaysInMonth(year int, month time.Month) (number int) {
 	return 30 + int((month+month>>3)&1)
 }
 
-// BeginningOfDay 获取指定日期的开始时间
+// BeginningOfDay 获取本地时区指定日期的开始时间
 func BeginningOfDay(year int, month time.Month, day int) time.Time {
 	return time.Date(year, month, day, 0, 0, 0, 0, time.Local)
 }
 
-// EndOfDay 获取指定日期的结束时间
+// EndOfDay 获取本地时区指定日期的结束时间
 func EndOfDay(year int, month time.Month, day int) time.Time {
 	return time.Date(year, month, day, 23, 59, 59, int(time.Second-time.Nanosecond), time.Local)
 }
 
-// BeginningOfWeek 获取指定日期所在周的开始时间
+// BeginningOfWeek 获取本地时区指定日期所在周的开始时间
 func BeginningOfWeek(year int, month time.Month, day int) time.Time {
 	var t = time.Date(year, month, day, 0, 0, 0, 0, time.Local)
 	var w = t.Weekday()
@@ -397,7 +436,7 @@ func BeginningOfWeek(year int, month time.Month, day int) time.Time {
 	return time.Date(year, month, day-d, 0, 0, 0, 0, time.Local)
 }
 
-// EndOfWeek 获取指定日期所在周的结束时间
+// EndOfWeek 获取本地时区指定日期所在周的结束时间
 func EndOfWeek(year int, month time.Month, day int) time.Time {
 	var t = time.Date(year, month, day, 0, 0, 0, 0, time.Local)
 	var w = t.Weekday()
@@ -405,43 +444,45 @@ func EndOfWeek(year int, month time.Month, day int) time.Time {
 	return time.Date(year, month, day+d, 23, 59, 59, int(time.Second-time.Nanosecond), time.Local)
 }
 
-// BeginningOfMonth 获取指定月份的开始时间
+// BeginningOfMonth 获取本地时区指定月份的开始时间
 func BeginningOfMonth(year int, month time.Month) time.Time {
 	return time.Date(year, month, 1, 0, 0, 0, 0, time.Local)
 }
 
-// EndOfMonth 获取指定月份的结束时间
+// EndOfMonth 获取本地时区指定月份的结束时间
 func EndOfMonth(year int, month time.Month) time.Time {
 	return time.Date(year, month+1, 0, 23, 59, 59, int(time.Second-time.Nanosecond), time.Local)
 }
 
-// BeginningOfQuarter 获取指定季度的开始时间
+// BeginningOfQuarter 获取本地时区指定季度的开始时间
 func BeginningOfQuarter(year int, quarter int) time.Time {
 	var m = time.Month((quarter-1)*3 + 1)
 	return time.Date(year, m, 1, 0, 0, 0, 0, time.Local)
 }
 
-// EndOfQuarter 获取指定季度的结束时间
+// EndOfQuarter 获取本地时区指定季度的结束时间
 func EndOfQuarter(year int, quarter int) time.Time {
 	var m = time.Month((quarter-1)*3 + 3)
 	return time.Date(year, m+1, 0, 23, 59, 59, int(time.Second-time.Nanosecond), time.Local)
 }
 
-// BeginningOfYear 获取指定年份的开始时间
+// BeginningOfYear 获取本地时区指定年份的开始时间
 func BeginningOfYear(year int) time.Time {
 	return time.Date(year, time.January, 1, 0, 0, 0, 0, time.Local)
 }
 
-// EndOfYear 获取指定年份的结束时间
+// EndOfYear 获取本地时区指定年份的结束时间
 func EndOfYear(year int) time.Time {
 	return time.Date(year, time.December+1, 0, 23, 59, 59, int(time.Second-time.Nanosecond), time.Local)
 }
 
 // InRange 判断时间是否在指定时间范围内(包含边界值)
 func InRange(t UTCTime, u1 UTCTime, u2 UTCTime) bool {
-	if u1.UTC().After(u2.UTC()) {
-		u1, u2 = u2, u1
+	var start = u1.UTC()
+	var end = u2.UTC()
+	if start.After(end) {
+		start, end = end, start
 	}
-	var unix = t.UTC().Unix()
-	return unix >= u1.UTC().Unix() && unix <= u2.UTC().Unix()
+	var current = t.UTC()
+	return !current.Before(start) && !current.After(end)
 }

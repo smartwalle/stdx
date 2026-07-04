@@ -12,7 +12,7 @@ import (
 var location = loadLocation()
 
 func loadLocation() *time.Location {
-	loc, err := time.LoadLocation("Asia/Shanghai")
+	loc, err := timex.LoadLocation("Asia/Shanghai")
 	if err != nil {
 		loc = time.FixedZone("Asia/Shanghai", 8*60*60)
 	}
