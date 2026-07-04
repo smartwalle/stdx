@@ -418,64 +418,6 @@ func DaysInMonth(year int, month time.Month) (number int) {
 	return 30 + int((month+month>>3)&1)
 }
 
-// BeginningOfDay 获取本地时区指定日期的开始时间
-func BeginningOfDay(year int, month time.Month, day int) time.Time {
-	return time.Date(year, month, day, 0, 0, 0, 0, time.Local)
-}
-
-// EndOfDay 获取本地时区指定日期的结束时间
-func EndOfDay(year int, month time.Month, day int) time.Time {
-	return time.Date(year, month, day, 23, 59, 59, int(time.Second-time.Nanosecond), time.Local)
-}
-
-// BeginningOfWeek 获取本地时区指定日期所在周的开始时间
-func BeginningOfWeek(year int, month time.Month, day int) time.Time {
-	var t = time.Date(year, month, day, 0, 0, 0, 0, time.Local)
-	var w = t.Weekday()
-	var d = int(w - time.Sunday)
-	return time.Date(year, month, day-d, 0, 0, 0, 0, time.Local)
-}
-
-// EndOfWeek 获取本地时区指定日期所在周的结束时间
-func EndOfWeek(year int, month time.Month, day int) time.Time {
-	var t = time.Date(year, month, day, 0, 0, 0, 0, time.Local)
-	var w = t.Weekday()
-	var d = int(time.Saturday - w)
-	return time.Date(year, month, day+d, 23, 59, 59, int(time.Second-time.Nanosecond), time.Local)
-}
-
-// BeginningOfMonth 获取本地时区指定月份的开始时间
-func BeginningOfMonth(year int, month time.Month) time.Time {
-	return time.Date(year, month, 1, 0, 0, 0, 0, time.Local)
-}
-
-// EndOfMonth 获取本地时区指定月份的结束时间
-func EndOfMonth(year int, month time.Month) time.Time {
-	return time.Date(year, month+1, 0, 23, 59, 59, int(time.Second-time.Nanosecond), time.Local)
-}
-
-// BeginningOfQuarter 获取本地时区指定季度的开始时间
-func BeginningOfQuarter(year int, quarter int) time.Time {
-	var m = time.Month((quarter-1)*3 + 1)
-	return time.Date(year, m, 1, 0, 0, 0, 0, time.Local)
-}
-
-// EndOfQuarter 获取本地时区指定季度的结束时间
-func EndOfQuarter(year int, quarter int) time.Time {
-	var m = time.Month((quarter-1)*3 + 3)
-	return time.Date(year, m+1, 0, 23, 59, 59, int(time.Second-time.Nanosecond), time.Local)
-}
-
-// BeginningOfYear 获取本地时区指定年份的开始时间
-func BeginningOfYear(year int) time.Time {
-	return time.Date(year, time.January, 1, 0, 0, 0, 0, time.Local)
-}
-
-// EndOfYear 获取本地时区指定年份的结束时间
-func EndOfYear(year int) time.Time {
-	return time.Date(year, time.December+1, 0, 23, 59, 59, int(time.Second-time.Nanosecond), time.Local)
-}
-
 // InRange 判断时间是否在指定时间范围内(包含边界值)
 func InRange(t UTCTime, u1 UTCTime, u2 UTCTime) bool {
 	var start = u1.UTC()
