@@ -5,7 +5,7 @@ import (
 	"sync"
 )
 
-type Group struct {
+type RoutineGroup struct {
 	ctx    context.Context
 	cancel func(error)
 
@@ -17,7 +17,7 @@ type Group struct {
 	err     error
 }
 
-func NewGroup(ctx context.Context, maxConcurrency int, queueCapacity int) *Group {
+func NewRoutineGroup(ctx context.Context, maxConcurrency int, queueCapacity int) *RoutineGroup {
 	ctx, cancel := context.WithCancelCause(ctx)
 	if maxConcurrency < 1 {
 		maxConcurrency = 1
@@ -25,14 +25,14 @@ func NewGroup(ctx context.Context, maxConcurrency int, queueCapacity int) *Group
 	if queueCapacity < 0 {
 		queueCapacity = 0
 	}
-	return &Group{
+	return &RoutineGroup{
 		ctx:     ctx,
 		cancel:  cancel,
 		routine: NewRoutine(maxConcurrency, queueCapacity),
 	}
 }
 
-func (g *Group) Wait() error {
+func (g *RoutineGroup) Wait() error {
 	g.wg.Wait()
 	if g.routine != nil {
 		g.routine.Close()
@@ -47,11 +47,11 @@ func (g *Group) Wait() error {
 	return cause
 }
 
-func (g *Group) OnPanic(handler PanicHandler) {
+func (g *RoutineGroup) OnPanic(handler PanicHandler) {
 	g.routine.OnPanic(handler)
 }
 
-func (g *Group) Go(fn func(context.Context) error) {
+func (g *RoutineGroup) Go(fn func(context.Context) error) {
 	select {
 	case <-g.ctx.Done():
 		return
@@ -64,7 +64,7 @@ func (g *Group) Go(fn func(context.Context) error) {
 	}
 }
 
-func (g *Group) Run(fn func(ctx context.Context) error) {
+func (g *RoutineGroup) Run(fn func(ctx context.Context) error) {
 	select {
 	case <-g.ctx.Done():
 		return
@@ -77,7 +77,7 @@ func (g *Group) Run(fn func(ctx context.Context) error) {
 	}
 }
 
-func (g *Group) TryGo(fn func(context.Context) error) bool {
+func (g *RoutineGroup) TryGo(fn func(context.Context) error) bool {
 	select {
 	case <-g.ctx.Done():
 		return false
@@ -92,7 +92,7 @@ func (g *Group) TryGo(fn func(context.Context) error) bool {
 	return true
 }
 
-func (g *Group) makeTask(fn func(context.Context) error, cancelOnError bool) func() {
+func (g *RoutineGroup) makeTask(fn func(context.Context) error, cancelOnError bool) func() {
 	return func() {
 		defer g.wg.Done()
 		if err := fn(g.ctx); err != nil {
