@@ -26,9 +26,11 @@ func (m *Map[K, V]) MarshalJSON() ([]byte, error) {
 
 	var buf bytes.Buffer
 	buf.WriteByte('{')
+	var encoder = json.NewEncoder(&buf)
 
 	var index = 0
 	var rangeErr error
+	var keyBytes []byte
 	m.Range(func(key K, value V) bool {
 		if index > 0 {
 			// JSON 对象成员之间用逗号分隔，第一个成员前面不写逗号。
@@ -42,25 +44,22 @@ func (m *Map[K, V]) MarshalJSON() ([]byte, error) {
 			rangeErr = err
 			return false
 		}
-		var keyBytes []byte
-		// keyText 虽然已经是 string，但仍然需要走 json.Marshal。
-		// 这样可以复用标准库的字符串转义规则，避免遗漏控制字符、引号等边界。
-		keyBytes, err = json.Marshal(keyText)
-		if err != nil {
-			rangeErr = err
-			return false
-		}
-		var valueBytes []byte
-		valueBytes, err = json.Marshal(value)
-		if err != nil {
+		// keyText 虽然已经是 string，但仍然不能手动拼接双引号。
+		// strconv.AppendQuote 会复用标准库的字符串转义规则，
+		// 避免遗漏控制字符、引号、反斜杠等边界。
+		keyBytes = strconv.AppendQuote(keyBytes[:0], keyText)
+		buf.Write(keyBytes)
+		buf.WriteByte(':')
+
+		if err = encoder.Encode(value); err != nil {
 			// value 的序列化仍交给 encoding/json，保持和普通结构体、切片等类型一致。
 			rangeErr = err
 			return false
 		}
+		// Encoder.Encode 会在每个 value 后追加换行。
+		// 这里直接截掉最后一个换行，保持 JSON 对象是紧凑格式。
+		buf.Truncate(buf.Len() - 1)
 
-		buf.Write(keyBytes)
-		buf.WriteByte(':')
-		buf.Write(valueBytes)
 		index++
 		return true
 	})
