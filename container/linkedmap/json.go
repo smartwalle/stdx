@@ -11,7 +11,7 @@ import (
 // MarshalJSON 按插入顺序序列化为 JSON 对象。
 //
 // 这里不通过中间 map，而是直接按 Range 顺序写入 bytes.Buffer。
-// 如果先转成普通 map 再序列化，会丢失 linkedmap 维护的插入顺序。
+// 如果先转成普通 map 再序列化，会丢失 linked map 维护的插入顺序。
 //
 // JSON 对象的 key 最终只能是字符串，所以会先把 K 转成字符串，
 // 再用 strconv.AppendQuote 对 key 字符串做转义，避免手写字符串转义逻辑。
@@ -136,7 +136,7 @@ func (m *Map[K, V]) UnmarshalJSON(b []byte) error {
 
 // formatJSONKey 把 key 转成 JSON 对象可以使用的字符串 key。
 //
-// JSON 对象的成员名只能是字符串，但 linkedmap 的 key 可以是任何 Key 类型。
+// JSON 对象的成员名只能是字符串，但 linked map 的 key 可以是任何 Key 类型。
 // 因此这里只支持可以明确转成字符串且可以再解析回来的基础类型。
 //
 // 如果 K 是结构体、数组等复杂 Key 类型，会返回错误。
