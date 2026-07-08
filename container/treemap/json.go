@@ -13,6 +13,8 @@ import (
 // Go 的 encoding/json 在序列化普通 map 时会自行处理 key 顺序。
 // 这里不通过中间 map，而是直接按 Map 的 Range 顺序写入 bytes.Buffer，
 // 这样可以保证输出顺序与 treemap 的 key 顺序一致。
+// 如果先转成普通 map 再序列化，JSON key 会按字符串形式排序，
+// 可能和 int、float 等 key 的自然顺序不一致。
 //
 // JSON 对象的 key 最终只能是字符串，所以会先把 K 转成字符串，
 // 再用 json.Marshal 对 key 字符串做转义，避免手写字符串转义逻辑。
