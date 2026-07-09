@@ -1,4 +1,4 @@
-package mathx
+package stdx
 
 import (
 	"math"
